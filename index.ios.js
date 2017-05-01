@@ -10,6 +10,7 @@ import {
   StyleSheet,
   Text,
   Image,
+  Navigator,
   View
 } from 'react-native';
 import TabNavigator from 'react-native-tab-navigator';
@@ -25,7 +26,8 @@ export default class GitHubTrending extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <TabNavigator>
+        {/*<TabNavigator>
+            
           <TabNavigator.Item
             selected={this.state.selectedTab === 'tb_popular'}
             selectedTitleStyle={{color: '#3c763d'}}
@@ -62,8 +64,10 @@ export default class GitHubTrending extends Component {
             renderSelectedIcon={() => <Image style={[styles.image, {tintColor: '#a94442'}]} source={require('./res/images/ic_trending.png')} />}
             onPress={() => this.setState({ selectedTab: 'tb_my' })}>
             <View style={styles.page4}></View>
-          </TabNavigator.Item>
-        </TabNavigator>
+          </TabNavigator.Item> 
+          
+        </TabNavigator>*/}
+        
       </View>
     );
   }
