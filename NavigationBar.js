@@ -12,27 +12,29 @@ import {
 const NAV_BAR_HEIGHT_ANDROID = 50;
 const NAV_BAR_HEIGHT_IOS = 44;
 const STATUS_BAR_HEIGHT = 20;
-const StatusBarSharp = {
+const StatusBarShape = {
     backgroundColor: PropTypes.string,
     barStyle: PropTypes.oneOf(['default', 'light-content', 'dark-content']),
-    hidden: PropTypes.bool
+    hidden: PropTypes.bool,
+    animated: PropTypes.bool
 };
 
 export default class NavigationBar extends Component {
-    static propType = {
-        style: View.propTypes.style,
+    static propTypes = {
+        style: View.propTypes.style, // 必须是视图的style
         title: PropTypes.string,
         titleView: PropTypes.element,
         hide: PropTypes.bool,
         leftButton: PropTypes.element,
         rightButton: PropTypes.element,
-        statusBar: PropTypes.shape(StatusBarSharp)
+        statusBar: PropTypes.shape(StatusBarShape)
     }
 
     static defaultProps = {
         statusBar: {
             barStyle: 'light-content',
-            hidden: false
+            hidden: false,
+            animated: true
         }
     }
 
@@ -65,7 +67,7 @@ export default class NavigationBar extends Component {
         </View>;
 
         return (
-            <View style={ styles.container }>
+            <View style={ [styles.container, this.props.style] }>
                 { status }
                 { content }
             </View>
@@ -81,7 +83,6 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         height: Platform.OS == 'ios' ? NAV_BAR_HEIGHT_IOS : NAV_BAR_HEIGHT_ANDROID,
-        backgroundColor: '#31708f',
         flexDirection: 'row',
     },
     titleViewContainer: {
