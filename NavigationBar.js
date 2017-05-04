@@ -49,7 +49,7 @@ export default class NavigationBar extends Component {
     render() {
 
         // 状态栏
-        const status = <View style={[styles.statusBar, this.props.statusBar]}>
+        const status = <View style={styles.statusBar}>
             <StatusBar { ...this.props.statusBar }/>
         </View>;
         
