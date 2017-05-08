@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import {
     View,
     Text,
+    TouchableOpacity,
+    Image,
     StyleSheet
 } from 'react-native';
 import Girl from './Girl';
@@ -17,16 +19,38 @@ export default class Boy extends Component {
         }
     }
 
+    renderButton(image) {
+        return (
+            <TouchableOpacity
+                onPress = { () => {
+                    this.props.navigator.pop();
+                }}
+            >
+                <Image style={{ width: 22, height: 22, margin: 5 }} source={image}></Image>
+            </TouchableOpacity>
+        )
+    }
+
     render() {
         return (
             <View style={styles.container}>
                 <NavigationBar 
-                    title={<Text>Boy</Text>}
-                    statusBar = {{
-                        backgroundColor: '#3c763d'
+                    title={'Boy'}
+                    style = {{
+                        backgroundColor: '#87CEFF'
                     }}
+                    statusBar = {{
+                        backgroundColor: "#EE6363",
+                        hidden: true
+                    }}
+                    leftButton = {
+                        this.renderButton(require('./res/images/ic_arrow_back_white_36pt.png'))
+                    }
+                    rightButton = {
+                        this.renderButton(require('./res/images/ic_star.png'))
+                    }
                 ></NavigationBar>
-                <Text style={styles.text}> I am boy </Text>
+                <Text style={styles.text}> I am Boy </Text>
                 <Text style={styles.text} onPress={() =>{
                         this.props.navigator.push({
                             component: Girl,
@@ -49,7 +73,7 @@ export default class Boy extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'green',
+        backgroundColor: "#FFF"
     },
     text: {
         fontSize: 20

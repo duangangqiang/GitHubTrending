@@ -15,12 +15,14 @@ import {
 } from 'react-native';
 import TabNavigator from 'react-native-tab-navigator';
 import Boy from './Boy';
+import ListViewTest from './ListViewTest';
 
 export default class GitHubTrending extends Component {
   constructor(props) {
     super(props);
+    
     this.state = {
-      selectedTab: 'tb_popular',
+      selectedTab: 'tb_popular'
     }
   }
 
@@ -65,7 +67,7 @@ export default class GitHubTrending extends Component {
             onPress={() => this.setState({ selectedTab: 'tb_my' })}>
             <View style={styles.page4}></View>
           </TabNavigator.Item>
-        </TabNavigator>*/}
+        </TabNavigator>
         <Navigator 
           initialRoute = {{
             component: Boy
@@ -75,7 +77,8 @@ export default class GitHubTrending extends Component {
             let Component = route.component;
             return <Component navigator={navigator} {...route.params} />
           }}
-        ></Navigator>
+        ></Navigator>*/}
+        <ListViewTest />
       </View>
     );
   }
