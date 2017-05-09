@@ -11,7 +11,7 @@ import {
 import DataRepository from '../expand/dao/DataRepository';
 import NavigationBar from '../common/NavigationBar';
 
-const URL = 'https://api.github.com/search/respositories?q=';
+const URL = 'https://api.github.com/search/repositories?q=';
 const QUERY_STR = '&sort=stars';
 
 export default class PopularPage extends Component {
