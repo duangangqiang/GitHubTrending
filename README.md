@@ -1,2 +1,2 @@
 # GitHubTrending
-react native git hub trending app
+这是我学习ReactNative的一个项目
