@@ -5,11 +5,15 @@ import {
   Text,
   Navigator,
   TextInput,
-  View
+  View,
+  ListView
 } from 'react-native';
+
+import ScrollableTabView, { ScrollableTabBar } from 'react-native-scrollable-tab-view';
 
 import DataRepository from '../expand/dao/DataRepository';
 import NavigationBar from '../common/NavigationBar';
+import RepositoryCell from '../common/RepositoryCell';
 
 const URL = 'https://api.github.com/search/repositories?q=';
 const QUERY_STR = '&sort=stars';
@@ -46,15 +50,19 @@ export default class PopularPage extends Component {
         return (
             <View style={styles.container}>
                 <NavigationBar 
-                    title={'欢迎'}
+                    title={'最热项目'}
                     style={{ backgroundColor: '#6495ED' }}
                 />
-                <Text style={styles.tips} onPress={() => this.onLoad()}
-                >获取数据</Text>
-                <TextInput style={{height: 40, borderWidth: 1}}
-                    onChangeText={text => this.text = text}    
-                />
-                <Text style={{height: 500}}>获取的数据: {this.state.result}</Text>
+                <ScrollableTabView
+                    renderTabBar={() => <ScrollableTabBar/>}
+                >
+                    {/*<ReactPage tabLabel="React" />
+                    <FlowPage tabLabel="Flow" />
+                    <JestPage tabLabel="Jest" />*/}
+                    <PopularTab tabLabel="JAVA">JAVA</PopularTab>
+                    <PopularTab tabLabel="C">C</PopularTab>
+                    <PopularTab tabLabel="ios">C#</PopularTab>
+                </ScrollableTabView>
             </View>
         );
     }
@@ -68,3 +76,49 @@ const styles = StyleSheet.create({
         fontSize: 29
     }
 });
+
+class PopularTab extends Component {
+     constructor(props) {
+        super(props);
+        this.dataRepository = new DataRepository();
+        this.state = {
+            result: '',
+            dataSource: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
+        };
+    }
+
+    getUrl(key) {
+        return URL + key + QUERY_STR;
+    }
+
+    componentDidMount() {
+        this.loadData();
+    }
+
+    loadData() {
+        let url = this.getUrl(this.props.tabLabel);
+        this.dataRepository.fetchNetRespository(url)
+            .then(result => {
+                this.setState({
+                    dataSource: this.state.dataSource.cloneWithRows(result.items)
+                })
+            })
+            .catch(error => {
+                this.setState({
+                    result: JSON.stringify(error)
+                })
+            })
+    }
+
+    renderRow(data) {
+        return <RepositoryCell data={data} />;
+    }
+
+    render() {
+        return <View>
+            <ListView dataSource={this.state.dataSource}
+                renderRow={(data) => this.renderRow(data)}
+            ></ListView>
+        </View>
+    }
+}
