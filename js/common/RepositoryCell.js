@@ -42,7 +42,13 @@ const styles = StyleSheet.create({
         marginRight: 5,
         marginVertical: 3,
         borderWidth: 0.5,
-        borderRadius: 2
+        borderRadius: 2,
+        borderColor: '#ddd',
+        shadowColor: 'gray', // ios
+        shadowOffset: {width: 0.5, height: 0.5}, // ios
+        shadowOpacity: 0.4, // ios
+        shadowRadius: 1, // ios
+        elevation: 2 // android
     },
     title: {
         fontSize: 16,
