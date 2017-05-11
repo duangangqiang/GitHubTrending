@@ -25,15 +25,13 @@ export default class CustomKeyPage extends Component {
     }
 
     loadData() {
-        this.languageDao.fetch()
-                .then(result => {
-                    this.setState({
-                        dataArray: result
-                    });
-                })
-                .catch(error => {
-                    console.log(error);
-                })
+        this.languageDao.fetch().then(result => {
+            this.setState({
+                dataArray: result
+            });
+        }).catch(error => {
+            console.log(error);
+        })
     }
 
     componentDidMount() {
@@ -87,9 +85,9 @@ export default class CustomKeyPage extends Component {
         let leftText = data.name;
         return (
             <CheckBox 
-                style={styles.checkbox}
-                onClick={() => this.onClick(data)}
-                leftText={ leftText }
+                style={styles.checkbox} 
+                onClick={() => this.onClick(data)} 
+                leftText={ leftText } 
                 isChecked= {data.checked}
                 checkImage={ <Image style={styles.checkedImage} source={require('./img/ic_check_box.png')}></Image> }    
                 unCheckImage={ <Image style={styles.unCheckedImage} source={require('./img/ic_check_box_outline_blank.png')}></Image> }
@@ -107,9 +105,7 @@ export default class CustomKeyPage extends Component {
             <View style={styles.container}>
                 <NavigationBar 
                     title = {'自定义标签'}
-                    statusBar = {{
-                        backgroundColor: '#2196f3'
-                    }}
+                    statusBar = {{ backgroundColor: '#2196f3' }}
                     leftButton = { ViewUtils.getLeftButton(() => this.onSave()) }
                     rightButton = { rightButton }
                 />
@@ -146,12 +142,9 @@ const styles = StyleSheet.create({
         padding: 10
     },
     checkedImage: {
-        tintColor: '#2196f3',
-        height: 50,
-        width: 50
+        tintColor: '#2196f3'
     },
     unCheckedImage: {
-        tintColor: '#2196f3',
-        backgroundColor: '#6495ED'
+        tintColor: '#2196f3'
     }
 });

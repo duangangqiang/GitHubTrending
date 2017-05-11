@@ -13,5 +13,4 @@ export default class ArrayUtils {
         }
         array.push(item);
     }
-    
 }

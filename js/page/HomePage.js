@@ -8,6 +8,7 @@ import {
   View
 } from 'react-native';
 import TabNavigator from 'react-native-tab-navigator';
+
 import PopularPage from './PopularPage';
 import AsyncStorageTest from '../../temp/AsyncStorageTest';
 import MyPage from './my/MyPage';

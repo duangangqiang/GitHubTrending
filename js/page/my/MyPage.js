@@ -1,13 +1,8 @@
 import React, { Component } from 'react';
 import {
-  AppRegistry,
   StyleSheet,
   Text,
-  Navigator,
-  TextInput,
   View,
-  ListView,
-  RefreshControl
 } from 'react-native';
 
 import NavigationBar from '../../common/NavigationBar';
