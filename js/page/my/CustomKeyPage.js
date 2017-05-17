@@ -88,9 +88,9 @@ export default class CustomKeyPage extends Component {
                 style={styles.checkbox} 
                 onClick={() => this.onClick(data)} 
                 leftText={ leftText } 
-                isChecked= {data.checked}
-                checkImage={ <Image style={styles.checkedImage} source={require('./img/ic_check_box.png')}></Image> }    
-                unCheckImage={ <Image style={styles.unCheckedImage} source={require('./img/ic_check_box_outline_blank.png')}></Image> }
+                isChecked= { data.checked }
+                checkedImage={ <Image style={styles.checkedImage} source={require('./img/ic_check_box.png')} /> }    
+                unCheckedImage={ <Image style={styles.unCheckedImage} source={require('./img/ic_check_box_outline_blank.png')} /> }
             ></CheckBox>
         );
     }
