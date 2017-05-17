@@ -7,6 +7,7 @@ import {
 
 import NavigationBar from '../../common/NavigationBar';
 import CustomKeyPage from './CustomKeyPage';
+import SortKeyPage from './SortKeyPage';
 
 export default class MyPage extends Component {
     constructor(props) {
@@ -15,7 +16,7 @@ export default class MyPage extends Component {
 
     onPress() {
         this.props.navigator.push({
-            component: CustomKeyPage,
+            component: SortKeyPage,
             params: {...this.props}
         })
     }
