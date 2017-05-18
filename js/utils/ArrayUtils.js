@@ -27,4 +27,20 @@ export default class ArrayUtils {
         }
         return newArray;
     }
+
+    /**
+     * 判断两个数组的元素是否意义对应
+     * @param {*} arr1 第一个数组 
+     * @param {*} arr2 第二个数组
+     * @return {boolean} 是否相等的结果
+     */
+    static isEqual(arr1, arr2) {
+        if (!(arr1 && arr2)) return false;
+        if (arr1.length !== arr2.length) return false;
+
+        for (let i = 0, l = arr2.length; i < l; i++) {
+            if (arr1[i] !== arr2[i]) return false;
+        }
+        return true;
+    }
 }
