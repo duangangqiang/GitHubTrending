@@ -3,7 +3,7 @@ export default class ArrayUtils {
     /**
      * 更新数组,若item已经存在则从数组中将它移除,否则添加进数组
      */
-    static updateArray (array, item) {
+    static updateArray(array, item) {
         for (let i = 0, len = array.length; i < len; i++) {
             let temp = array[i];
             if (temp === item) {
@@ -17,7 +17,7 @@ export default class ArrayUtils {
     /**
      * 克隆数组
      */
-    static clone (from) {
+    static clone(from) {
         if (!from) return [];
 
         let newArray = [];
@@ -42,5 +42,15 @@ export default class ArrayUtils {
             if (arr1[i] !== arr2[i]) return false;
         }
         return true;
+    }
+
+    /**
+     * 将数组中指定元素移除
+     */
+    static remove(array, item) {
+        if (!array) return;
+        for (var i = 0, l = array.length; i < l; i++) {
+            if (item === array[i]) array.splice(i, 1);
+        }
     }
 }

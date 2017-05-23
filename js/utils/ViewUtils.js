@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import {
   Image,
+  View,
+  Text,
   TouchableOpacity
 } from 'react-native';
 
@@ -14,4 +16,13 @@ export default class ViewUtils {
         );
     }
 
+    static getRightButton (rightButtonTitle, callBack) {
+        return (
+            <TouchableOpacity onPress={callBack}>
+                <View style={{ margin: 10 }}>
+                    <Text style={{ fontSize: 20, color: '#fff' }}>{rightButtonTitle}</Text>
+                </View>
+            </TouchableOpacity>
+        );
+    }
 }

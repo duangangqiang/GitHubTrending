@@ -14,13 +14,6 @@ export default class MyPage extends Component {
         super(props);
     }
 
-    onPress() {
-        this.props.navigator.push({
-            component: SortKeyPage,
-            params: {...this.props}
-        })
-    }
-
     render() {
         return (
             <View style={styles.container}>
@@ -30,7 +23,22 @@ export default class MyPage extends Component {
                         backgroundColor: '#2196f3'
                     }}
                 />
-                <Text style={styles.tips} onPress={() => this.onPress()}>自定义标签</Text>
+                <Text style={styles.tips} onPress={() => 
+                    this.props.navigator.push({
+                        component: CustomKeyPage,
+                        params: {...this.props}
+                    })}
+                >自定义标签</Text>
+                <Text style={styles.tips} onPress={() => this.props.navigator.push({
+                        component: SortKeyPage,
+                        params: {...this.props}
+                    })}
+                >标签排序</Text>
+                <Text style={styles.tips} onPress={() => this.props.navigator.push({
+                        component: CustomKeyPage,
+                        params: {...this.props, isRemoveKey: true}
+                    })}
+                >标签移除</Text>
             </View>
         );
     }

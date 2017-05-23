@@ -11,15 +11,15 @@ import {
 
 import NavigationBar from '../../common/NavigationBar';
 import ViewUtils from '../../utils/ViewUtils';
-import ArrayUitls from '../../utils/ArrayUtils';
+import ArrayUtils from '../../utils/ArrayUtils';
 import LanguageDao, { FLAG_LANGUAGE } from '../../expand/dao/LanguageDao';
 import CheckBox from 'react-native-check-box';
 
 export default class CustomKeyPage extends Component {
     constructor(props) {
         super(props);
-        this.languageDao = new LanguageDao(FLAG_LANGUAGE.flag_key);
         this.changeValues = [];
+        this.isRemoveKey = this.props.isRemoveKey ? true : false;
         this.state = {
             dataArray: []
         };
@@ -36,6 +36,7 @@ export default class CustomKeyPage extends Component {
     }
 
     componentDidMount() {
+        this.languageDao = new LanguageDao(FLAG_LANGUAGE.flag_key);
         this.loadData();
     }
 
@@ -43,6 +44,9 @@ export default class CustomKeyPage extends Component {
         if (this.changeValues.length === 0) {
             this.props.navigator.pop();
         } else {
+            for (let i = 0, l = this.changeValues.length; i < l; i++) {
+                ArrayUtils.remove(this.state.dataArray, this.changeValues[i]);
+            }
             this.languageDao.save(this.state.dataArray);
             this.props.navigator.pop();
         }
@@ -60,8 +64,10 @@ export default class CustomKeyPage extends Component {
     }
 
     onClick(data) {
-        data.checked = !data.checked;
-        ArrayUitls.updateArray(this.changeValues, data);
+        if (!this.isRemoveKey) {
+            data.checked = !data.checked;
+        }
+        ArrayUtils.updateArray(this.changeValues, data);
     }
 
     renderView() {
@@ -95,12 +101,15 @@ export default class CustomKeyPage extends Component {
 
     renderCheckBox(data) {
         let leftText = data.name;
+
+        // 如果是移除标签,这里不让其选中
+        let isChecked = this.isRemoveKey ? false : data.checked;
         return (
             <CheckBox 
                 style={styles.checkbox} 
                 onClick={() => this.onClick(data)} 
                 leftText={ leftText } 
-                isChecked= { data.checked }
+                isChecked= { isChecked }
                 checkedImage={ <Image style={styles.checkedImage} source={require('./img/ic_check_box.png')} /> }    
                 unCheckedImage={ <Image style={styles.unCheckedImage} source={require('./img/ic_check_box_outline_blank.png')} /> }
             ></CheckBox>
@@ -108,18 +117,18 @@ export default class CustomKeyPage extends Component {
     }
 
     render() {
-        let rightButton = <TouchableOpacity onPress={() => this.onSave()}>
-            <View style={styles.saveBtnBox}>
-                <Text style={styles.saveBtn}>保存</Text>
-            </View>
-        </TouchableOpacity>;
+        // 两种操作显示不同内容
+        let title = this.isRemoveKey ? '标签移除' : '自定义标签';
+
+        // 右侧文字
+        let rightButtonTitle = this.isRemoveKey ? '移除' : '保存';
         return (
             <View style={styles.container}>
                 <NavigationBar 
-                    title = {'自定义标签'}
+                    title = { title }
                     statusBar = {{ backgroundColor: '#2196f3' }}
                     leftButton = { ViewUtils.getLeftButton(() => this.onBack()) }
-                    rightButton = { rightButton }
+                    rightButton = { ViewUtils.getRightButton(rightButtonTitle, () => this.onSave()) }
                 />
                 <ScrollView>{ this.renderView() }</ScrollView>
             </View>
@@ -133,13 +142,6 @@ const styles = StyleSheet.create({
     },
     tips: {
         fontSize: 29
-    },
-    saveBtn: {
-        fontSize: 20,
-        color: '#fff'
-    },
-    saveBtnBox: {
-        margin: 10
     },
     underLine: {
         height: 0.3,
