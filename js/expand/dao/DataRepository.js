@@ -1,5 +1,5 @@
 export default class DataRepository {
-    fetchNetRespository (url) {
+    fetchNetRepository (url) {
         return new Promise((resolve, reject) => {
             fetch(url)
                 .then(res => res.json())

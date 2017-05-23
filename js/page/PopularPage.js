@@ -53,7 +53,7 @@ export default class PopularPage extends Component {
 
     onLoad() {
         let url = this.getUrl(this.text);
-        this.dataRepository.fetchNetRespository(url)
+        this.dataRepository.fetchNetRepository(url)
             .then(result => {
                 this.setState({
                     result: JSON.stringify(result)
@@ -128,7 +128,7 @@ class PopularTab extends Component {
             isLoading: true
         })
         let url = this.getUrl(this.props.tabLabel);
-        this.dataRepository.fetchNetRespository(url)
+        this.dataRepository.fetchNetRepository(url)
             .then(result => {
                 this.setState({
                     dataSource: this.state.dataSource.cloneWithRows(result.items),
