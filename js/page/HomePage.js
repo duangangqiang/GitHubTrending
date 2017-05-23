@@ -5,9 +5,12 @@ import {
   Text,
   Navigator,
   Image,
-  View
+  View,
+  DeviceEventEmitter
 } from 'react-native';
+
 import TabNavigator from 'react-native-tab-navigator';
+import Toast, {DURATION} from 'react-native-easy-toast';
 
 import PopularPage from './PopularPage';
 import AsyncStorageTest from '../../temp/AsyncStorageTest';
@@ -20,6 +23,16 @@ export default class HomePage extends Component {
     this.state = {
       selectedTab: 'tb_popular'
     }
+  }
+
+  componentDidMount() {
+      this.listener = DeviceEventEmitter.addListener('showToast', (text) => {
+          this.toast.show(text, DURATION.LENGTH_LONG);
+      });
+  }
+
+  componentWillUnmount() {
+    this.listener && this.listener.remove();
   }
 
   render() {
@@ -64,6 +77,7 @@ export default class HomePage extends Component {
             <MyPage {...this.props}></MyPage>
           </TabNavigator.Item>
         </TabNavigator>
+        <Toast ref={toast => this.toast = toast} />
       </View>
     );
   }
