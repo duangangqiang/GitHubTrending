@@ -1,5 +1,5 @@
 export default class HttpUtils {
-    static get (url) {
+    static get(url) {
         return new Promise((resolve, reject) => {
             fetch(url)
                 .then(res => res.json())
@@ -12,7 +12,7 @@ export default class HttpUtils {
         });
     }
 
-    static post (url, data) {
+    static post(url, data) {
         return new Promise((resolve, reject) => {
             fetch(url, {
                 method: 'POST',
@@ -22,13 +22,13 @@ export default class HttpUtils {
                 },
                 body: JSON.stringify(data)
             })
-            .then(res => res.json())
-            .then(result => {
-                resolve(result)
-            })
-            .catch(error => {
-                reject(error);
-            })
+                .then(res => res.json())
+                .then(result => {
+                    resolve(result)
+                })
+                .catch(error => {
+                    reject(error);
+                })
         });
     }
 }

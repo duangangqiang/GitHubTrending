@@ -30,7 +30,7 @@ export default class ArrayUtils {
 
     /**
      * 判断两个数组的元素是否意义对应
-     * @param {*} arr1 第一个数组 
+     * @param {*} arr1 第一个数组
      * @param {*} arr2 第二个数组
      * @return {boolean} 是否相等的结果
      */
@@ -49,7 +49,7 @@ export default class ArrayUtils {
      */
     static remove(array, item) {
         if (!array) return;
-        for (var i = 0, l = array.length; i < l; i++) {
+        for (let i = 0, l = array.length; i < l; i++) {
             if (item === array[i]) array.splice(i, 1);
         }
     }

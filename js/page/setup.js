@@ -1,21 +1,21 @@
-import React, { Component } from 'react';
-import { Navigator } from 'react-native';
+import React, {Component} from 'react';
+import {Navigator} from 'react-native';
 
 import WelcomePage from './WelcomePage';
 
 // 进行一些初始化配置
 function setup() {
     class Root extends Component {
-        renderScene(route, navigator) {
+        static renderScene(route, navigator) {
             let Component = route.component;
             return <Component {...route.params} navigator={navigator}/>;
         }
 
         render() {
             return (
-                <Navigator 
-                    initialRoute = {{component: WelcomePage}}
-                    renderScene={(route, navigator) => this.renderScene(route, navigator)}
+                <Navigator
+                    initialRoute={{component: WelcomePage}}
+                    renderScene={(route, navigator) => Root.renderScene(route, navigator)}
                 />
             );
         }

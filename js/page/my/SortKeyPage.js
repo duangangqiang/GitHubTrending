@@ -1,24 +1,25 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  TouchableHighlight,
-  TouchableOpacity,
-  Alert
+    StyleSheet,
+    Text,
+    View,
+    Image,
+    TouchableHighlight,
+    TouchableOpacity,
+    Alert,
+    DeviceEventEmitter
 } from 'react-native';
-
-import SorttableListView from 'react-native-sortable-listview';
-import Toast, { DURATION } from 'react-native-easy-toast'
+import SortableListView from 'react-native-sortable-listview';
 
 import NavigationBar from '../../common/NavigationBar';
-import CustomKeyPage from './CustomKeyPage';
-
-import LanguageDao, { FLAG_LANGUAGE } from '../../expand/dao/LanguageDao';
+import LanguageDao, {FLAG_LANGUAGE} from '../../expand/dao/LanguageDao';
 import ArrayUtils from '../../utils/ArrayUtils';
+import {SHOW_TOAST} from '../../constants/Events';
 import ViewUtils from '../../utils/ViewUtils';
 
+/**
+ * 标签排序页面
+ */
 export default class SortKeyPage extends Component {
     constructor(props) {
         super(props);
@@ -44,23 +45,23 @@ export default class SortKeyPage extends Component {
         this.languageDao.fetch()
             .then(result => {
                 this.dataArray = result; // 将原始的所有标签的数组保存起来
-                
-                const checkedArray = this.getCheckedItems(result);
-                this.setState({ checkedArray }); // 把已经选中的标签数组设置到state上
+
+                const checkedArray = SortKeyPage.getCheckedItems(result);
+                this.setState({checkedArray}); // 把已经选中的标签数组设置到state上
 
                 this.originalCheckedArray = ArrayUtils.clone(checkedArray); // 备份原始被选中的标签数组
             })
-            .catch(error => {
-                this.toast.show('加载数据失败: ' + error);
+            .catch(() => {
+                DeviceEventEmitter.emit(SHOW_TOAST, '加载数据失败');
             })
     }
 
     /**
      * 通过原始的标签数组获取被选中的标签数组
      * @param {*} result
-     * @return 
+     * @return
      */
-    getCheckedItems(result) {
+    static getCheckedItems(result) {
         let checkedArray = [];
         for (let i = 0, len = result.length; i < len; i++) {
             let data = result[i];
@@ -81,10 +82,15 @@ export default class SortKeyPage extends Component {
         if (ArrayUtils.isEqual(this.originalCheckedArray, this.state.checkedArray)) {
             this.props.navigator.pop();
         } else {
-            Alert.alert('提示', '要保存修改吗?', [
-                { text: '不保存', onPress: () => { this.props.navigator.pop(); } },
-                { text: '保存', onPress: () => { this.onSave(); } }
-            ]);
+            Alert.alert('提示', '要保存修改吗?', [{
+                text: '不保存', onPress: () => {
+                    this.props.navigator.pop();
+                }
+            }, {
+                text: '保存', onPress: () => {
+                    this.onSave();
+                }
+            }]);
         }
     }
 
@@ -117,7 +123,7 @@ export default class SortKeyPage extends Component {
             this.props.navigator.pop();
             return;
         }
-        
+
         this.getSortResult();
         this.languageDao.save(this.sortResultArray);
         this.props.navigator.pop();
@@ -132,22 +138,21 @@ export default class SortKeyPage extends Component {
 
         return (
             <View style={styles.container}>
-                <NavigationBar 
+                <NavigationBar
                     title={'标签排序'}
-                    leftButton = { ViewUtils.getLeftButton(() => this.onBack()) }
-                    rightButton = { rightButton }
+                    leftButton={ ViewUtils.getLeftButton(() => this.onBack()) }
+                    rightButton={ rightButton }
                 />
-                <SorttableListView 
-                    style = {{ flex: 1 }}
-                    data = { this.state.checkedArray }
-                    order = { Object.keys(this.state.checkedArray) }
-                    onRowMoved = {e => {
+                <SortableListView
+                    style={{flex: 1}}
+                    data={ this.state.checkedArray }
+                    order={ Object.keys(this.state.checkedArray) }
+                    onRowMoved={e => {
                         this.state.checkedArray.splice(e.to, 0, this.state.checkedArray.splice(e.from, 1)[0]);
                         this.forceUpdate();
                     }}
-                    renderRow = { row => <SortCell data = {row} /> }
-                ></SorttableListView>
-                <Toast ref={toast => { this.toast = toast }}></Toast>
+                    renderRow={ row => <SortCell data={row}/> }
+                />
             </View>
         );
     }
@@ -156,14 +161,14 @@ export default class SortKeyPage extends Component {
 class SortCell extends Component {
     render() {
         return (
-            <TouchableHighlight 
+            <TouchableHighlight
                 underlayColor={'#eee'}
                 delayLongPress={500}
                 style={styles.item}
                 {...this.props.sortHandlers}
             >
                 <View style={styles.row}>
-                    <Image style={styles.image} source={require('./img/ic_sort.png')} />
+                    <Image style={styles.image} source={require('./img/ic_sort.png')}/>
                     <Text>{this.props.data.name}</Text>
                 </View>
             </TouchableHighlight>

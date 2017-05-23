@@ -5,10 +5,14 @@ import {
   View,
 } from 'react-native';
 
+import Colors from '../../constants/Colors';
 import NavigationBar from '../../common/NavigationBar';
 import CustomKeyPage from './CustomKeyPage';
 import SortKeyPage from './SortKeyPage';
 
+/**
+ * 我的页面
+ */
 export default class MyPage extends Component {
     constructor(props) {
         super(props);
@@ -20,7 +24,7 @@ export default class MyPage extends Component {
                 <NavigationBar 
                     title={'我的'}
                     statusBar= {{
-                        backgroundColor: '#2196f3'
+                        backgroundColor: Colors.main
                     }}
                 />
                 <Text style={styles.tips} onPress={() => 

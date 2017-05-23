@@ -1,96 +1,88 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
-  AppRegistry,
-  StyleSheet,
-  Text,
-  Navigator,
-  TextInput,
-  View,
-  ListView,
-  RefreshControl,
-  DeviceEventEmitter
+    StyleSheet,
+    View,
+    DeviceEventEmitter
 } from 'react-native';
+import ScrollableTabView, {ScrollableTabBar} from 'react-native-scrollable-tab-view';
 
-import ScrollableTabView, { ScrollableTabBar } from 'react-native-scrollable-tab-view';
-
-import DataRepository from '../expand/dao/DataRepository';
 import NavigationBar from '../common/NavigationBar';
-import RepositoryCell from '../common/RepositoryCell';
+import PopularTab from '../common/PopularTab';
+import Colors from '../constants/Colors';
+import LanguageDao, {FLAG_LANGUAGE} from '../expand/dao/LanguageDao';
+import {SHOW_TOAST} from '../constants/Events';
+import {LOAD_LANGUAGE_LIST_FAIL} from '../constants/Tips';
 
-import LanguageDao, { FLAG_LANGUAGE } from '../expand/dao/LanguageDao';
-
-const URL = 'https://api.github.com/search/repositories?q=';
-const QUERY_STR = '&sort=stars';
-
+/**
+ * 最热页面
+ */
 export default class PopularPage extends Component {
     constructor(props) {
         super(props);
-        this.dataRepository = new DataRepository();
-        this.languageDao = new LanguageDao(FLAG_LANGUAGE.flag_key);
         this.state = {
-            result: '',
-            languages: []
+            languages: [] // 当前显示的语言列表
         };
     }
 
     componentDidMount() {
-        this.loadData()
+        this.languageDao = new LanguageDao(FLAG_LANGUAGE.flag_key);
+        this.loadLanguage();
     }
 
-    loadData() {
+    /**
+     * 加载语言列表
+     */
+    loadLanguage() {
         this.languageDao.fetch().then(result => {
             this.setState({
                 languages: result
             });
-        }).catch(error => {
-            console.log(error);
+        }).catch(() => {
+            DeviceEventEmitter.emit(SHOW_TOAST, LOAD_LANGUAGE_LIST_FAIL);
         })
     }
 
-
-    getUrl(key) {
-        return URL + key + QUERY_STR;
+    /**
+     * 生成当前的项目项列表
+     * @returns {Array}
+     */
+    renderPopularTab() {
+        return this.state.languages.map((item, index, arr) => {
+            let lan = arr[index];
+            return lan.checked ? <PopularTab key={index} tabLabel={lan.name}/> : null;
+        })
     }
 
-    onLoad() {
-        let url = this.getUrl(this.text);
-        this.dataRepository.fetchNetRepository(url)
-            .then(result => {
-                this.setState({
-                    result: JSON.stringify(result)
-                })
-            })
-            .catch(error => {
-                this.setState({
-                    result: JSON.stringify(error)
-                })
-            })
+    /**
+     * 生成当前页面的下拉视图
+     * @returns {XML}
+     */
+    renderContent() {
+
+        // 如果有内容才渲染这个ScrollableTabView
+        return this.state.languages.length > 0 ? <ScrollableTabView
+            tabBarBackgroundColor='#2196f3'
+            tabBarInactiveTextColor='#f5fffa'
+            tabBarActiveTextColor='#fff'
+            tabBarUnderlineStyle={{
+                backgroundColor: Colors.e7e7e7,
+                height: 2
+            }}
+            renderTabBar={() => <ScrollableTabBar/>}>
+            { this.renderPopularTab() }
+        </ScrollableTabView> : null;
     }
 
     render() {
-        let content = this.state.languages.length > 0 ? <ScrollableTabView
-                tabBarBackgroundColor = '#2196f3'
-                tabBarInactiveTextColor = 'mintcream'
-                tabBarActiveTextColor = 'white'
-                tabBarUnderlineStyle = {{
-                    backgroundColor: '#e7e7e7',
-                    height: 2
-                }}
-                renderTabBar={() => <ScrollableTabBar/>}>
-                    {this.state.languages.map((result, index, arr) => {
-                        let lan = arr[index];
-                        return lan.checked ? <PopularTab key={index} tabLabel={lan.name}></PopularTab> : null;
-                    })}
-                </ScrollableTabView> : null;
         return (
             <View style={styles.container}>
-                <NavigationBar 
+                <NavigationBar
                     title={'最热项目'}
-                    statusBar= {{
-                        backgroundColor: '#2196f3'
+                    statusBar={{
+                        backgroundColor: Colors.main
                     }}
                 />
-                { content }
+                { this.renderContent() }
             </View>
         );
     }
@@ -104,78 +96,3 @@ const styles = StyleSheet.create({
         fontSize: 29
     }
 });
-
-class PopularTab extends Component {
-     constructor(props) {
-        super(props);
-        this.dataRepository = new DataRepository();
-        this.state = {
-            result: '',
-            isLoading: false,
-            dataSource: new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
-        };
-    }
-
-    getUrl(key) {
-        return URL + key + QUERY_STR;
-    }
-
-    componentDidMount() {
-        this.loadData();
-    }
-
-    loadData() {
-        this.setState({
-            isLoading: true
-        })
-        let url = this.getUrl(this.props.tabLabel);
-        this.dataRepository.fetchRepository(url)
-            .then(result => {
-                let items = result && result.items ? result.items : (result ? result : []);
-                this.setState({
-                    dataSource: this.state.dataSource.cloneWithRows(result.items),
-                    isLoading: false
-                });
-                if (result && result.update_date && !this.dataRepository.checkData(result.update_date)) {
-                    DeviceEventEmitter.emit('showToast', '数据过时');
-                    return this.dataRepository.fetchNetRepository(url);
-                } else {
-                    DeviceEventEmitter.emit('showToast', '显示缓存数据');
-                }
-            })
-            .then(items => {
-                if (!items || items.length === 0) {
-                    return;
-                }
-                this.setState({
-                    dataSource: this.state.dataSource.cloneWithRows(items)
-                });
-                DeviceEventEmitter.emit('showToast', '显示网络数据');
-            })
-            .catch(error => {
-                this.setState({
-                    result: JSON.stringify(error),
-                    isLoading: false
-                })
-            })
-    }
-
-    renderRow(data) {
-        return <RepositoryCell data={data} />;
-    }
-
-    render() {
-        return <View style={{flex: 1}}>
-            <ListView dataSource={this.state.dataSource}
-                renderRow={(data) => this.renderRow(data)}
-                refreshControl={<RefreshControl 
-                    refreshing={this.state.isLoading}
-                    onRefresh={() => this.loadData()}
-                    color={['#2196f3']} // android    
-                    tintColor = {'#2196f3'} // ios
-                    titleColor={'#2196f3'} // ios
-                />}
-            ></ListView>
-        </View>
-    }
-}

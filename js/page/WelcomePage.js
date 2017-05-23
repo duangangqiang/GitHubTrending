@@ -1,14 +1,16 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
     View,
     Text,
-    StyleSheet,
-    Navigator
 } from 'react-native';
 
 import NavigationBar from '../common/NavigationBar';
 import HomePage from './HomePage';
+import Colors from '../constants/Colors';
 
+/**
+ * 欢迎页面
+ */
 export default class WelcomePage extends Component {
     componentDidMount() {
         this.timer = setTimeout(() => {
@@ -20,17 +22,17 @@ export default class WelcomePage extends Component {
         }, 2000);
     }
 
-    componentWillUnMount() {
+    componentWillUnmount() {
         this.timer && clearTimeout(this.timer);
     }
 
     render() {
         return (
             <View>
-                <NavigationBar 
+                <NavigationBar
                     title={'欢迎'}
-                    statusBar= {{
-                        backgroundColor: '#2196f3'
+                    statusBar={{
+                        backgroundColor: Colors.main
                     }}
                 />
                 <Text>欢迎</Text>

@@ -1,11 +1,9 @@
-import React, { Component, PropTypes } from 'react';
-
+import React, {Component, PropTypes} from 'react';
 import {
     View,
     Text,
     StyleSheet,
     Platform,
-    Image,
     StatusBar
 } from 'react-native';
 
@@ -19,6 +17,9 @@ const StatusBarShape = {
     animated: PropTypes.bool
 };
 
+/**
+ * 导航组件,包含: 1.返回; 2.标题; 3.右侧按钮
+ */
 export default class NavigationBar extends Component {
     static propTypes = {
         style: View.propTypes.style, // 必须是视图的style
@@ -28,7 +29,7 @@ export default class NavigationBar extends Component {
         leftButton: PropTypes.element,
         rightButton: PropTypes.element,
         statusBar: PropTypes.shape(StatusBarShape)
-    }
+    };
 
     static defaultProps = {
         statusBar: {
@@ -36,7 +37,7 @@ export default class NavigationBar extends Component {
             hidden: false,
             animated: true
         }
-    }
+    };
 
     constructor(props) {
         super(props);
@@ -52,7 +53,7 @@ export default class NavigationBar extends Component {
         const status = <View style={styles.statusBar}>
             <StatusBar { ...this.props.statusBar }/>
         </View>;
-        
+
         // 如果有titleView就优先显示titleView
         const titleView = this.props.titleView ? this.titleView
             : <View><Text style={ styles.title }>{ this.props.title }</Text></View>;
@@ -61,7 +62,7 @@ export default class NavigationBar extends Component {
         let content = <View style={ styles.navBar }>
             { this.props.leftButton }
             <View style={ styles.titleViewContainer }>
-                { titleView }    
+                { titleView }
             </View>
             { this.props.rightButton }
         </View>;
@@ -82,7 +83,7 @@ const styles = StyleSheet.create({
     navBar: {
         justifyContent: 'space-between',
         alignItems: 'center',
-        height: Platform.OS == 'ios' ? NAV_BAR_HEIGHT_IOS : NAV_BAR_HEIGHT_ANDROID,
+        height: Platform.OS === 'ios' ? NAV_BAR_HEIGHT_IOS : NAV_BAR_HEIGHT_ANDROID,
         flexDirection: 'row',
     },
     titleViewContainer: {
@@ -99,6 +100,6 @@ const styles = StyleSheet.create({
         color: 'white'
     },
     statusBar: {
-        height: Platform.OS == 'ios' ? STATUS_BAR_HEIGHT : 0,
+        height: Platform.OS === 'ios' ? STATUS_BAR_HEIGHT : 0,
     }
 });
