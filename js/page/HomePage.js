@@ -12,6 +12,7 @@ import {SHOW_TOAST} from '../constants/Events';
 import PopularPage from './PopularPage';
 import AsyncStorageTest from '../../temp/AsyncStorageTest';
 import MyPage from './my/MyPage';
+import WebViewTest from '../../temp/WebViewTest';
 
 /**
  * 首页
@@ -49,7 +50,7 @@ export default class HomePage extends Component {
                                                          source={require('../../res/images/ic_popular.png')}/>}
                         // badgeText="1"
                         onPress={() => this.setState({selectedTab: 'tb_popular'})}>
-                        <PopularPage />
+                        <PopularPage {...this.props}/>
                     </TabNavigator.Item>
                     <TabNavigator.Item
                         selected={this.state.selectedTab === 'tb_trending'}
@@ -71,7 +72,7 @@ export default class HomePage extends Component {
                         renderSelectedIcon={() => <Image style={[styles.image, {tintColor: '#2196f3'}]}
                                                          source={require('../../res/images/ic_popular.png')}/>}
                         onPress={() => this.setState({selectedTab: 'tb_favorite'})}>
-                        <View style={styles.page3}>page</View>
+                        <WebViewTest/>
                     </TabNavigator.Item>
                     <TabNavigator.Item
                         selected={this.state.selectedTab === 'tb_my'}

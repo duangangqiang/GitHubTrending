@@ -49,7 +49,7 @@ export default class PopularPage extends Component {
     renderPopularTab() {
         return this.state.languages.map((item, index, arr) => {
             let lan = arr[index];
-            return lan.checked ? <PopularTab key={index} tabLabel={lan.name}/> : null;
+            return lan.checked ? <PopularTab key={index} tabLabel={lan.name} {...this.props}/> : null;
         })
     }
 

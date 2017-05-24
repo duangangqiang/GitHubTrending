@@ -8,6 +8,7 @@ import {
 
 import DataRepository from '../expand/dao/DataRepository';
 import RepositoryCell from './RepositoryCell';
+import RepositoryDetail from '../page/RepositoryDetail';
 import {SHOW_TOAST} from '../constants/Events';
 import Colors from '../constants/Colors';
 import {DISPLAY_NET_DATA, DATA_EXPIRED, DISPLAY_CACHE_DATA} from '../constants/Tips';
@@ -106,17 +107,33 @@ export default class PopularTab extends Component {
             })
     }
 
+    onSelect(data) {
+        this.props.navigator.push({
+            component: RepositoryDetail,
+            params: {
+                item: data,
+                ...this.props
+            }
+        });
+    }
+
+    renderCell(data) {
+        return (
+            <RepositoryCell onSelect={(data) => this.onSelect(data)}
+                            data={data}/>
+        );
+    }
+
     render() {
         return (
             <View style={{flex: 1}}>
                 <ListView dataSource={this.state.dataSource}
-                          renderRow={(data) => <RepositoryCell data={data}/>}
-                          refreshControl={<RefreshControl
-                              refreshing={this.state.isLoading}
-                              onRefresh={() => this.loadRepositories()}
-                              color={[Colors.main]} // android
-                              tintColor={Colors.main} // ios
-                              titleColor={Colors.main} // ios
+                          renderRow={data => this.renderCell(data)}
+                          refreshControl={<RefreshControl refreshing={this.state.isLoading}
+                                                          onRefresh={() => this.loadRepositories()}
+                                                          color={[Colors.main]} // android
+                                                          tintColor={Colors.main} // ios
+                                                          titleColor={Colors.main} // ios
                           />}
                 />
             </View>
