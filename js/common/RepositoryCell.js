@@ -13,7 +13,7 @@ import {
 export default class RepositoryCell extends Component {
     render() {
         return (
-            <TouchableOpacity style={styles.container} onPress={this.props.onSelect}>
+            <TouchableOpacity style={styles.container} onPress={() => this.props.onSelect(this.props.data)}>
                 <View style={styles.box}>
                     <Text style={styles.title}>{this.props.data.full_name}</Text>
                     <Text style={styles.description}>{this.props.data.description}</Text>
