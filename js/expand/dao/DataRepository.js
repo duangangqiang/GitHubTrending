@@ -2,7 +2,21 @@ import {
     AsyncStorage
 } from 'react-native';
 
+import Trending from '../../trending/GitHubTrending';
+
+export const FLAG_STORAGE = {
+    flag_popular: 'popular',
+    flag_trending: 'trending'
+};
+
 export default class DataRepository {
+
+    constructor (flag) {
+        this.flag = flag;
+        if (flag === FLAG_STORAGE.flag_trending) {
+            this.trending = new Trending();
+        }
+    }
 
     /**
      * 根据url加载GitHub的项目
@@ -67,19 +81,31 @@ export default class DataRepository {
      */
     fetchNetRepository(url) {
         return new Promise((resolve, reject) => {
-            fetch(url)
-                .then(res => res.json())
-                .then(result => {
-                    if (!result) {
-                        reject(new Error('responseData is null'));
-                        return;
-                    }
-                    resolve(result.items);
-                    DataRepository.saveRepository(url, result.items);
-                })
-                .catch(error => {
-                    reject(error);
-                })
+            if (this.flag === FLAG_STORAGE.flag_trending) {
+                this.trending.fetchTrending(url)
+                    .then(result => {
+                        if (!result) {
+                            reject(new Error('responseData is null'));
+                        } else {
+                            DataRepository.saveRepository(url, result);
+                            resolve(result);
+                        }
+                    })
+            } else {
+                fetch(url)
+                    .then(res => res.json())
+                    .then(result => {
+                        if (!result) {
+                            reject(new Error('responseData is null'));
+                            return;
+                        }
+                        resolve(result.items);
+                        DataRepository.saveRepository(url, result.items);
+                    })
+                    .catch(error => {
+                        reject(error);
+                    })
+            }
         });
     }
 

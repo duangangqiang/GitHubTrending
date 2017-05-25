@@ -3,19 +3,18 @@ import {
     View,
     Text,
     TextInput,
-    StyleSheet,
-    AsyncStorage
+    StyleSheet
 } from 'react-native';
 
 import NavigationBar from '../js/common/NavigationBar';
-import Trending from '../js/trending/GitHubTrending';
+import DataRepository, {FLAG_STORAGE} from '../js/expand/dao/DataRepository';
 
 const URL = 'https://github.com/trending/';
 
 export default class TrendingTest extends Component {
     constructor(props) {
         super(props);
-        this.trending = new Trending();
+        this.dataRepository = new DataRepository(FLAG_STORAGE.flag_trending);
         this.state = {
             result: ''
         }
@@ -23,7 +22,7 @@ export default class TrendingTest extends Component {
 
     onLoad() {
         let url = URL + this.text;
-        this.trending.fetchTrending(url)
+        this.dataRepository.fetchRepository(url)
             .then(result => {
                 this.setState({
                     result: JSON.stringify(result)
@@ -40,10 +39,10 @@ export default class TrendingTest extends Component {
         return (
           <View style={styles.container}>
                 <NavigationBar title={'Trending测试'}
-                    style={{backgroundColor: '#6495ED'}}></NavigationBar>
+                    style={{backgroundColor: '#6495ED'}} />
                 
                 <TextInput style={styles.textInput}
-                           onChangeText={text => this.text = text}></TextInput>
+                           onChangeText={text => this.text = text} />
                 <View style={styles.textBox}>
                     <Text style={styles.text}
                           onPress={() => this.onLoad()}>加载</Text>

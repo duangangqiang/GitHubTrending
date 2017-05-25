@@ -6,7 +6,7 @@ import {
     DeviceEventEmitter
 } from 'react-native';
 
-import DataRepository from '../expand/dao/DataRepository';
+import DataRepository, {FLAG_STORAGE} from '../expand/dao/DataRepository';
 import RepositoryCell from './RepositoryCell';
 import RepositoryDetail from '../page/RepositoryDetail';
 import {SHOW_TOAST} from '../constants/Events';
@@ -25,7 +25,7 @@ const QUERY_STR = '&sort=stars';
 export default class PopularTab extends Component {
     constructor(props) {
         super(props);
-        this.dataRepository = new DataRepository();
+        this.dataRepository = new DataRepository(FLAG_STORAGE.flag_popular);
         this.state = {
             errorMsg: '', // 错误消息
             isLoading: false,
