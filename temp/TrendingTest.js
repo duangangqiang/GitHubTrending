@@ -26,12 +26,12 @@ export default class TrendingTest extends Component {
         this.trending.fetchTrending(url)
             .then(result => {
                 this.setState({
-                    result: JSON.stringify(result);
+                    result: JSON.stringify(result)
                 })
             })
             .catch(error => {
                 this.setState({
-                    result: JSON.stringify(error);
+                    result: JSON.stringify(error)
                 });
             })
     }
