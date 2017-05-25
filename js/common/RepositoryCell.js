@@ -17,7 +17,18 @@ export default class RepositoryCell extends Component {
         this.isPopularPage = this.props.isPopularPage;
     }
 
-    // "{"fullName":"taviso/loadlibrary","url":"/taviso/loadlibrary","description":"Porting Windows Dynamic Link Libraries to Linux","language":"C","meta":"987 stars today","contributors":["https://avatars3.githubusercontent.com/u/123814?v=3&amp;s=40","https://avatars3.githubusercontent.com/u/44654?v=3&amp;s=40"],"contributorsUrl":"/taviso/loadlibrary/graphs/contributors"}"
+    // "{
+    //      "fullName":"taviso/loadlibrary",
+    //      "url":"/taviso/loadlibrary",
+    //      "description":"Porting Windows Dynamic Link Libraries to Linux",
+    //      "language":"C",
+    //      "meta":"987 stars today",
+    //      "contributors":[
+    //          "https://avatars3.githubusercontent.com/u/123814?v=3&amp;s=40",
+    //          "https://avatars3.githubusercontent.com/u/44654?v=3&amp;s=40"
+    //      ],
+    //      "contributorsUrl":"/taviso/loadlibrary/graphs/contributors"
+    // }"
 
     render() {
         return (
