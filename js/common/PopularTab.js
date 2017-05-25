@@ -13,11 +13,14 @@ import {SHOW_TOAST} from '../constants/Events';
 import Colors from '../constants/Colors';
 import {DISPLAY_NET_DATA, DATA_EXPIRED, DISPLAY_CACHE_DATA} from '../constants/Tips';
 
-// 加载项目数据的地址
+// Popular页面加载项目数据的地址
 const URL = 'https://api.github.com/search/repositories?q=';
 
-// 其他查询参数
+// Popular页面其他查询参数
 const QUERY_STR = '&sort=stars';
+
+// Trending页面的地址
+const TRENDING_URL = 'https://github.com/trending/';
 
 /**
  * 最热页面的单个语言类型的Tab
@@ -25,7 +28,10 @@ const QUERY_STR = '&sort=stars';
 export default class PopularTab extends Component {
     constructor(props) {
         super(props);
-        this.dataRepository = new DataRepository(FLAG_STORAGE.flag_popular);
+        this.isPopularPage = this.props.isPopularPage;
+
+        // 根据不同页面传递不同标志
+        this.dataRepository = new DataRepository(this.isPopularPage ? FLAG_STORAGE.flag_popular : FLAG_STORAGE.flag_trending);
         this.state = {
             errorMsg: '', // 错误消息
             isLoading: false,
@@ -40,8 +46,8 @@ export default class PopularTab extends Component {
      * @param key 要加载的标签关键字
      * @returns {string} 请求地址
      */
-    static getUrl(key) {
-        return URL + key + QUERY_STR;
+    getUrl(key) {
+        return this.isPopularPage ? URL + key + QUERY_STR : TRENDING_URL + key;
     }
 
     componentDidMount() {
@@ -59,7 +65,7 @@ export default class PopularTab extends Component {
         });
 
         // 获取请求地址
-        const url = PopularTab.getUrl(this.props.tabLabel);
+        const url = this.getUrl(this.props.tabLabel);
 
         // 根据请求地址加载数据
         this.dataRepository.fetchRepository(url)
@@ -120,7 +126,7 @@ export default class PopularTab extends Component {
     renderCell(data) {
         return (
             <RepositoryCell onSelect={(data) => this.onSelect(data)}
-                            data={data}/>
+                            data={data} isPopularPage={this.isPopularPage}/>
         );
     }
 

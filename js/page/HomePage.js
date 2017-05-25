@@ -12,8 +12,7 @@ import {SHOW_TOAST} from '../constants/Events';
 import PopularPage from './PopularPage';
 import AsyncStorageTest from '../../temp/AsyncStorageTest';
 import MyPage from './my/MyPage';
-import WebViewTest from '../../temp/WebViewTest';
-import TrendingTest from '../../temp/TrendingTest';
+import TrendingPage from './TrendingPage';
 
 /**
  * 首页
@@ -62,7 +61,7 @@ export default class HomePage extends Component {
                         renderSelectedIcon={() => <Image style={[styles.image, {tintColor: '#2196f3'}]}
                                                          source={require('../../res/images/ic_trending.png')}/>}
                         onPress={() => this.setState({selectedTab: 'tb_trending'})}>
-                        <AsyncStorageTest />
+                        <TrendingPage />
                     </TabNavigator.Item>
                     <TabNavigator.Item
                         selected={this.state.selectedTab === 'tb_favorite'}
@@ -73,7 +72,7 @@ export default class HomePage extends Component {
                         renderSelectedIcon={() => <Image style={[styles.image, {tintColor: '#2196f3'}]}
                                                          source={require('../../res/images/ic_popular.png')}/>}
                         onPress={() => this.setState({selectedTab: 'tb_favorite'})}>
-                        <TrendingTest/>
+                        <TrendingPage/>
                     </TabNavigator.Item>
                     <TabNavigator.Item
                         selected={this.state.selectedTab === 'tb_my'}

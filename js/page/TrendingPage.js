@@ -14,9 +14,9 @@ import {SHOW_TOAST} from '../constants/Events';
 import {LOAD_LANGUAGE_LIST_FAIL} from '../constants/Tips';
 
 /**
- * 最热页面
+ * 趋势页面
  */
-export default class PopularPage extends Component {
+export default class TrendingPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -49,7 +49,7 @@ export default class PopularPage extends Component {
     renderPopularTab() {
         return this.state.languages.map((item, index, arr) => {
             let lan = arr[index];
-            return lan.checked ? <PopularTab key={index} isPopularPage={true} tabLabel={lan.name} {...this.props}/> : null;
+            return lan.checked ? <PopularTab key={index} tabLabel={lan.name} {...this.props}/> : null;
         })
     }
 
@@ -77,7 +77,7 @@ export default class PopularPage extends Component {
         return (
             <View style={styles.container}>
                 <NavigationBar
-                    title={'最热项目'}
+                    title={'趋势'}
                     statusBar={{
                         backgroundColor: Colors.main
                     }}
