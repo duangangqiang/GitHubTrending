@@ -38,11 +38,19 @@ export default class RepositoryTab extends Component {
      * @returns {string} 请求地址
      */
     getUrl(key) {
-        return this.isPopularPage ? URL.repositorySearch + key + URL.repositoryQuery : URL.Trending + key;
+        return this.isPopularPage ?
+            URL.repositorySearch + key + URL.repositoryQuery :
+            URL.Trending + key + this.props.timeSpan.searchText;
     }
 
     componentDidMount() {
         this.loadRepositories();
+    }
+
+    componentWillReceiveProps(nexProps) {
+        if (nexProps.timeSpan !== this.props.timeSpan) {
+            this.loadRepositories(nexProps.timeSpan);
+        }
     }
 
     /**
@@ -97,6 +105,10 @@ export default class RepositoryTab extends Component {
             })
     }
 
+    onRefresh() {
+        this.loadRepositories(this.props.timeSpan);
+    }
+
     /**
      * 点击就跳转到详情页面
      * @param data 当前行数据
@@ -136,7 +148,7 @@ export default class RepositoryTab extends Component {
                 <ListView dataSource={this.state.dataSource}
                           renderRow={data => this.renderCell(data)}
                           refreshControl={<RefreshControl refreshing={this.state.isLoading}
-                                                          onRefresh={() => this.loadRepositories()}
+                                                          onRefresh={() => this.onRefresh()}
                                                           color={[Colors.main]} // android
                                                           tintColor={Colors.main} // ios
                                                           titleColor={Colors.main} // ios

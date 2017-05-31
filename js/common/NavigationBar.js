@@ -55,7 +55,7 @@ export default class NavigationBar extends Component {
         </View>;
 
         // 如果有titleView就优先显示titleView
-        const titleView = this.props.titleView ? this.titleView
+        const titleView = this.props.titleView ? this.props.titleView
             : <View><Text style={ styles.title }>{ this.props.title }</Text></View>;
 
         // content包含左侧按钮,中间title,和右边按钮
