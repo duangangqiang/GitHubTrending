@@ -6,6 +6,7 @@ import {
 } from 'react-native';
 
 import Colors from '../../constants/Colors';
+import PAGE_CONFIG from '../../config/pages';
 import NavigationBar from '../../common/NavigationBar';
 import CustomKeyPage from './CustomKeyPage';
 import SortKeyPage from './SortKeyPage';
@@ -22,7 +23,7 @@ export default class MyPage extends Component {
         return (
             <View style={styles.container}>
                 <NavigationBar 
-                    title={'我的'}
+                    title={PAGE_CONFIG[MyPage.name].cnName}
                     statusBar= {{
                         backgroundColor: Colors.main
                     }}

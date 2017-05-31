@@ -7,6 +7,7 @@ import {
 import NavigationBar from '../common/NavigationBar';
 import HomePage from './HomePage';
 import Colors from '../constants/Colors';
+import PAGE_CONFIG from '../config/pages';
 
 /**
  * 欢迎页面
@@ -30,7 +31,7 @@ export default class WelcomePage extends Component {
         return (
             <View>
                 <NavigationBar
-                    title={'欢迎'}
+                    title={PAGE_CONFIG[WelcomePage.name].cnName}
                     statusBar={{
                         backgroundColor: Colors.main
                     }}

@@ -9,6 +9,7 @@ import ScrollableTabView, {ScrollableTabBar} from 'react-native-scrollable-tab-v
 import NavigationBar from '../common/NavigationBar';
 import RepositoryTab from '../common/RepositoryTab';
 import Colors from '../constants/Colors';
+import PAGE_CONFIG from '../config/pages';
 import LanguageDao, {FLAG_LANGUAGE} from '../expand/dao/LanguageDao';
 import {SHOW_TOAST} from '../constants/Events';
 import {LOAD_LANGUAGE_LIST_FAIL} from '../constants/Tips';
@@ -25,6 +26,8 @@ export default class TrendingPage extends Component {
     }
 
     componentDidMount() {
+
+        // 此处使用flag_language来创建LanguageDao
         this.languageDao = new LanguageDao(FLAG_LANGUAGE.flag_language);
         this.loadLanguage();
     }
@@ -77,7 +80,7 @@ export default class TrendingPage extends Component {
         return (
             <View style={styles.container}>
                 <NavigationBar
-                    title={'趋势'}
+                    title={PAGE_CONFIG[TrendingPage.name].cnName}
                     statusBar={{
                         backgroundColor: Colors.main
                     }}

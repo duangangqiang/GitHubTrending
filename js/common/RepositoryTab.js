@@ -2,26 +2,15 @@ import React, {Component} from 'react';
 import {
     View,
     ListView,
-    RefreshControl,
-    DeviceEventEmitter
+    RefreshControl
 } from 'react-native';
 
 import DataRepository, {FLAG_STORAGE} from '../expand/dao/DataRepository';
 import RepositoryCell from './RepositoryCell';
 import TrendingCell from './TrendingCell';
-import RepositoryDetail from '../page/RepositoryDetail';
-import {SHOW_TOAST} from '../constants/Events';
+import RepositoryDetailPage from '../page/RepositoryDetailPage';
 import Colors from '../constants/Colors';
-import {DISPLAY_NET_DATA, DATA_EXPIRED, DISPLAY_CACHE_DATA} from '../constants/Tips';
-
-// Popular页面加载项目数据的地址
-const URL = 'https://api.github.com/search/repositories?q=';
-
-// Popular页面其他查询参数
-const QUERY_STR = '&sort=stars';
-
-// Trending页面的地址
-const TRENDING_URL = 'https://github.com/trending/';
+import URL from '../config/url';
 
 /**
  * 最热页面的单个语言类型的Tab
@@ -48,7 +37,7 @@ export default class RepositoryTab extends Component {
      * @returns {string} 请求地址
      */
     getUrl(key) {
-        return this.isPopularPage ? URL + key + QUERY_STR : TRENDING_URL + key;
+        return this.isPopularPage ? URL.repositorySearch + key + URL.repositoryQuery : URL.Trending + key;
     }
 
     componentDidMount() {
@@ -83,14 +72,9 @@ export default class RepositoryTab extends Component {
 
                 // 如果数据过期了
                 if (result && result.update_date && !DataRepository.checkData(result.update_date)) {
-                    // DeviceEventEmitter.emit(SHOW_TOAST, DATA_EXPIRED);
 
                     // 加载网络的项目数据
                     return this.dataRepository.fetchNetRepository(url);
-                } else {
-
-                    // 提示使用了缓存数据
-                    // DeviceEventEmitter.emit(SHOW_TOAST, DISPLAY_CACHE_DATA);
                 }
             })
             .then(items => {
@@ -103,8 +87,6 @@ export default class RepositoryTab extends Component {
                 this.setState({
                     dataSource: this.state.dataSource.cloneWithRows(items)
                 });
-
-                // DeviceEventEmitter.emit(SHOW_TOAST, DISPLAY_NET_DATA);
             })
             .catch((error) => {
                 this.setState({
@@ -116,7 +98,7 @@ export default class RepositoryTab extends Component {
 
     onSelect(data) {
         this.props.navigator.push({
-            component: RepositoryDetail,
+            component: RepositoryDetailPage,
             params: {
                 item: data,
                 ...this.props

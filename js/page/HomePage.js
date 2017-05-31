@@ -21,23 +21,27 @@ import MyPage from './my/MyPage';
 const PageTabs = [PopularPage, TrendingPage, WebViewTest, MyPage];
 
 /**
- * 首页
+ * 首页组件
  */
 export default class HomePage extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            selectedTab: PAGE_CONFIG[PopularPage.name].flag
+            selectedTab: PAGE_CONFIG[PopularPage.name].flag // 默认使用最热页面
         }
     }
 
     componentDidMount() {
+
+        // 增加一个显示提示消息的监听器,子组件可以通过触发事件来显示消息
         this.listener = DeviceEventEmitter.addListener(SHOW_TOAST, (text) => {
             this.toast.show(text, DURATION.LENGTH_LONG);
         });
     }
 
     componentWillUnmount() {
+
+        // 移除组件需要移除监听器
         this.listener && this.listener.remove();
     }
 
@@ -87,7 +91,7 @@ export default class HomePage extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#f5fcff'
+        backgroundColor: Colors.f5fcff
     },
     image: {
         width: 22,

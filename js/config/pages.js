@@ -18,5 +18,14 @@ export default PAGE_CONFIG = {
         cnName: '我的',
         flag: 'tb_my',
         icon: require('../../res/images/ic_my.png')
+    },
+    WelcomePage: {
+        cnName: '欢迎'
+    },
+    CustomKeyPage: {
+        cnName: '自定义标签'
+    },
+    SortKeyPage: {
+        cnName: '标签排序'
     }
 };

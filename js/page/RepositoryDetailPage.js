@@ -7,14 +7,16 @@ import {
 
 import ViewUtils from '../utils/ViewUtils';
 import NavigationBar from '../common/NavigationBar';
+import URL from '../config/url';
 
-const TRENDING_URL = 'https://github.com/';
-
-export default class RepositoryDetail extends Component {
+/**
+ * 每个仓库的详情页面
+ */
+export default class RepositoryDetailPage extends Component {
     constructor(props) {
         super(props);
         this.url = this.props.item.html_url ? this.props.item.html_url
-            : TRENDING_URL + this.props.item.fullName;
+            : URL.GitHub + this.props.item.fullName;
         let title = this.props.item.full_name ? this.props.item.full_name
             : this.props.item.fullName;
         this.state = {

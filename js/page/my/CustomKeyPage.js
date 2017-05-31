@@ -11,6 +11,7 @@ import CheckBox from 'react-native-check-box';
 
 import NavigationBar from '../../common/NavigationBar';
 import ViewUtils from '../../utils/ViewUtils';
+import Colors from '../../constants/Colors';
 import ArrayUtils from '../../utils/ArrayUtils';
 import {SHOW_TOAST} from '../../constants/Events';
 import {LOAD_LANGUAGE_LIST_FAIL} from '../../constants/Tips';
@@ -208,7 +209,7 @@ const styles = StyleSheet.create({
     },
     underLine: {
         height: 0.3,
-        backgroundColor: '#ddd',
+        backgroundColor: Colors.ddd,
     },
     item: {
         flexDirection: 'row',
@@ -219,9 +220,9 @@ const styles = StyleSheet.create({
         padding: 10
     },
     checkedImage: {
-        tintColor: '#2196f3'
+        tintColor: Colors.main
     },
     unCheckedImage: {
-        tintColor: '#2196f3'
+        tintColor: Colors.main
     }
 });

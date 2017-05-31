@@ -9,6 +9,7 @@ import ScrollableTabView, {ScrollableTabBar} from 'react-native-scrollable-tab-v
 import NavigationBar from '../common/NavigationBar';
 import PopularTab from '../common/RepositoryTab';
 import Colors from '../constants/Colors';
+import PAGE_CONFIG from '../config/pages';
 import LanguageDao, {FLAG_LANGUAGE} from '../expand/dao/LanguageDao';
 import {SHOW_TOAST} from '../constants/Events';
 import {LOAD_LANGUAGE_LIST_FAIL} from '../constants/Tips';
@@ -61,9 +62,9 @@ export default class PopularPage extends Component {
 
         // 如果有内容才渲染这个ScrollableTabView
         return this.state.languages.length > 0 ? <ScrollableTabView
-            tabBarBackgroundColor='#2196f3'
-            tabBarInactiveTextColor='#f5fffa'
-            tabBarActiveTextColor='#fff'
+            tabBarBackgroundColor= {Colors.main}
+            tabBarInactiveTextColor= {Colors.f5fffa}
+            tabBarActiveTextColor= {Colors.fff}
             tabBarUnderlineStyle={{
                 backgroundColor: Colors.e7e7e7,
                 height: 2
@@ -77,7 +78,7 @@ export default class PopularPage extends Component {
         return (
             <View style={styles.container}>
                 <NavigationBar
-                    title={'最热项目'}
+                    title={PAGE_CONFIG[PopularPage.name].cnName}
                     statusBar={{
                         backgroundColor: Colors.main
                     }}
