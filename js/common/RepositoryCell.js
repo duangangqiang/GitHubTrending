@@ -13,8 +13,6 @@ import {
 export default class RepositoryCell extends Component {
     constructor(props) {
         super(props);
-
-        this.isPopularPage = this.props.isPopularPage;
     }
 
     render() {

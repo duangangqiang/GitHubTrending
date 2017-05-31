@@ -4,11 +4,15 @@ import {
 
 import Trending from '../../trending/GitHubTrending';
 
+// 用于标记的变量
 export const FLAG_STORAGE = {
     flag_popular: 'popular',
     flag_trending: 'trending'
 };
 
+/**
+ * 加载Repository数据类
+ */
 export default class DataRepository {
 
     constructor (flag) {

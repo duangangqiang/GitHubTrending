@@ -15,8 +15,6 @@ import HTMLView from 'react-native-htmlview';
 export default class TrendingCell extends Component {
     constructor(props) {
         super(props);
-
-        this.isPopularPage = this.props.isPopularPage;
     }
 
     render() {

@@ -1,3 +1,6 @@
+/**
+ * 页面配置
+ */
 export default PAGE_CONFIG = {
     PopularPage: {
         cnName: '最热',

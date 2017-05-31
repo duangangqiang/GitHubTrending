@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {
     View,
     ListView,
+    StyleSheet,
     RefreshControl
 } from 'react-native';
 
@@ -96,6 +97,10 @@ export default class RepositoryTab extends Component {
             })
     }
 
+    /**
+     * 点击就跳转到详情页面
+     * @param data 当前行数据
+     */
     onSelect(data) {
         this.props.navigator.push({
             component: RepositoryDetailPage,
@@ -106,23 +111,28 @@ export default class RepositoryTab extends Component {
         });
     }
 
+    /**
+     * 生成单行元素
+     * @param data 当前行数据
+     * @returns {XML}
+     */
     renderCell(data) {
+
+        // 需要根据不同的页面来返回不同的组件
         if (this.isPopularPage) {
             return (
-                <RepositoryCell onSelect={(data) => this.onSelect(data)}
-                           data={data} isPopularPage={this.isPopularPage}/>
+                <RepositoryCell onSelect={(data) => this.onSelect(data)} data={data} />
             );
         } else {
             return (
-                <TrendingCell onSelect={(data) => this.onSelect(data)}
-                           data={data} isPopularPage={this.isPopularPage}/>
+                <TrendingCell onSelect={(data) => this.onSelect(data)} data={data} />
             );
         }
     }
 
     render() {
         return (
-            <View style={{flex: 1}}>
+            <View style={styles.box}>
                 <ListView dataSource={this.state.dataSource}
                           renderRow={data => this.renderCell(data)}
                           refreshControl={<RefreshControl refreshing={this.state.isLoading}
@@ -136,3 +146,9 @@ export default class RepositoryTab extends Component {
         );
     }
 }
+
+const styles = StyleSheet.create({
+    box: {
+        flex: 1
+    }
+});
