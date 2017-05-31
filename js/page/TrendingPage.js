@@ -7,7 +7,7 @@ import {
 import ScrollableTabView, {ScrollableTabBar} from 'react-native-scrollable-tab-view';
 
 import NavigationBar from '../common/NavigationBar';
-import PopularTab from '../common/PopularTab';
+import RepositoryTab from '../common/RepositoryTab';
 import Colors from '../constants/Colors';
 import LanguageDao, {FLAG_LANGUAGE} from '../expand/dao/LanguageDao';
 import {SHOW_TOAST} from '../constants/Events';
@@ -25,7 +25,7 @@ export default class TrendingPage extends Component {
     }
 
     componentDidMount() {
-        this.languageDao = new LanguageDao(FLAG_LANGUAGE.flag_key);
+        this.languageDao = new LanguageDao(FLAG_LANGUAGE.flag_language);
         this.loadLanguage();
     }
 
@@ -49,7 +49,7 @@ export default class TrendingPage extends Component {
     renderPopularTab() {
         return this.state.languages.map((item, index, arr) => {
             let lan = arr[index];
-            return lan.checked ? <PopularTab key={index} tabLabel={lan.name} {...this.props}/> : null;
+            return lan.checked ? <RepositoryTab key={index} tabLabel={lan.name} {...this.props}/> : null;
         })
     }
 

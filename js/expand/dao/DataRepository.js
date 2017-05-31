@@ -132,20 +132,19 @@ export default class DataRepository {
      * @returns {Boolean} 是否过期
      */
     static checkData(longTime) {
-        // let cDate = new Date(),
-        return false;
-        //     tDate = new Date();
-        //
-        // tDate.setTime(longTime);
-        //
-        // if (cDate.getMonth() !== tDate.getMonth()) {
-        //     return false;
-        // }
-        //
-        // if (cDate.getDay() !== tDate.getDay()) {
-        //     return false;
-        // }
-        //
-        // return cDate.getHours() === tDate.getHours();
+        let cDate = new Date(),
+            tDate = new Date();
+
+        tDate.setTime(longTime);
+
+        if (cDate.getMonth() !== tDate.getMonth()) {
+            return false;
+        }
+
+        if (cDate.getDay() !== tDate.getDay()) {
+            return false;
+        }
+
+        return cDate.getHours() === tDate.getHours();
     }
 }

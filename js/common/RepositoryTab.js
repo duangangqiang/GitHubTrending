@@ -8,6 +8,7 @@ import {
 
 import DataRepository, {FLAG_STORAGE} from '../expand/dao/DataRepository';
 import RepositoryCell from './RepositoryCell';
+import TrendingCell from './TrendingCell';
 import RepositoryDetail from '../page/RepositoryDetail';
 import {SHOW_TOAST} from '../constants/Events';
 import Colors from '../constants/Colors';
@@ -25,7 +26,7 @@ const TRENDING_URL = 'https://github.com/trending/';
 /**
  * 最热页面的单个语言类型的Tab
  */
-export default class PopularTab extends Component {
+export default class RepositoryTab extends Component {
     constructor(props) {
         super(props);
         this.isPopularPage = this.props.isPopularPage;
@@ -82,14 +83,14 @@ export default class PopularTab extends Component {
 
                 // 如果数据过期了
                 if (result && result.update_date && !DataRepository.checkData(result.update_date)) {
-                    DeviceEventEmitter.emit(SHOW_TOAST, DATA_EXPIRED);
+                    // DeviceEventEmitter.emit(SHOW_TOAST, DATA_EXPIRED);
 
                     // 加载网络的项目数据
                     return this.dataRepository.fetchNetRepository(url);
                 } else {
 
                     // 提示使用了缓存数据
-                    DeviceEventEmitter.emit(SHOW_TOAST, DISPLAY_CACHE_DATA);
+                    // DeviceEventEmitter.emit(SHOW_TOAST, DISPLAY_CACHE_DATA);
                 }
             })
             .then(items => {
@@ -103,9 +104,9 @@ export default class PopularTab extends Component {
                     dataSource: this.state.dataSource.cloneWithRows(items)
                 });
 
-                DeviceEventEmitter.emit(SHOW_TOAST, DISPLAY_NET_DATA);
+                // DeviceEventEmitter.emit(SHOW_TOAST, DISPLAY_NET_DATA);
             })
-            .catch(() => {
+            .catch((error) => {
                 this.setState({
                     errorMsg: JSON.stringify(error),
                     isLoading: false
@@ -124,10 +125,17 @@ export default class PopularTab extends Component {
     }
 
     renderCell(data) {
-        return (
-            <RepositoryCell onSelect={(data) => this.onSelect(data)}
-                            data={data} isPopularPage={this.isPopularPage}/>
-        );
+        if (this.isPopularPage) {
+            return (
+                <RepositoryCell onSelect={(data) => this.onSelect(data)}
+                           data={data} isPopularPage={this.isPopularPage}/>
+            );
+        } else {
+            return (
+                <TrendingCell onSelect={(data) => this.onSelect(data)}
+                           data={data} isPopularPage={this.isPopularPage}/>
+            );
+        }
     }
 
     render() {

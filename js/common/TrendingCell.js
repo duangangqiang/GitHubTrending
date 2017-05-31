@@ -7,10 +7,12 @@ import {
     TouchableOpacity
 } from 'react-native';
 
+import HTMLView from 'react-native-htmlview';
+
 /**
- * 最热模块单个项目行
+ * Trending页面的单个项目
  */
-export default class RepositoryCell extends Component {
+export default class TrendingCell extends Component {
     constructor(props) {
         super(props);
 
@@ -20,19 +22,28 @@ export default class RepositoryCell extends Component {
     render() {
         const data = this.props.data;
 
+        // 加一个p利于设置样式
+        let description = '<p>' + data.description + '</p>';
         return (
             <TouchableOpacity style={styles.container} onPress={() => this.props.onSelect(data)}>
                 <View style={styles.box}>
-                    <Text style={styles.title}>{data.full_name}</Text>
-                    <Text style={styles.description}>{data.description}</Text>
+                    <Text style={styles.title}>{data.fullName}</Text>
+                    <HTMLView value={description}
+                              onLinkPress={(url) => {}}
+                              stylesheet={{
+                                  p: styles.description,
+                                  a: styles.description
+                              }}
+                    />
+                    <Text style={styles.description}>{data.meta}</Text>
                     <View style={styles.bottom}>
                         <View style={styles.avatar_box}>
-                            <Text>Author: </Text>
-                            <Image style={styles.avatar} source={{uri: data.owner.avatar_url}}/>
-                        </View>
-                        <View style={styles.avatar_box}>
-                            <Text>Starts: </Text>
-                            <Text>{data.stargazers_count}</Text>
+                            <Text style={styles.description}>Build By: </Text>
+                            {data.contributors.map((result, index, arr) => {
+                                return <Image style={styles.avatar}
+                                              key={index}
+                                              source={{uri: arr[index]}}/>
+                            })}
                         </View>
                         <Image style={styles.star} source={require('../../res/images/ic_star.png')}/>
                     </View>

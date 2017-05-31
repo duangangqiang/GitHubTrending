@@ -7,7 +7,7 @@ import {
 import ScrollableTabView, {ScrollableTabBar} from 'react-native-scrollable-tab-view';
 
 import NavigationBar from '../common/NavigationBar';
-import PopularTab from '../common/PopularTab';
+import PopularTab from '../common/RepositoryTab';
 import Colors from '../constants/Colors';
 import LanguageDao, {FLAG_LANGUAGE} from '../expand/dao/LanguageDao';
 import {SHOW_TOAST} from '../constants/Events';
