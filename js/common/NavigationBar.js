@@ -7,8 +7,8 @@ import {
     StatusBar
 } from 'react-native';
 
-const NAV_BAR_HEIGHT_ANDROID = 50;
-const NAV_BAR_HEIGHT_IOS = 44;
+const NAV_BAR_HEIGHT_ANDROID = 30;
+const NAV_BAR_HEIGHT_IOS = 24;
 const STATUS_BAR_HEIGHT = 20;
 const StatusBarShape = {
     backgroundColor: PropTypes.string,

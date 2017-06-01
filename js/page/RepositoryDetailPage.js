@@ -8,6 +8,7 @@ import {
 import ViewUtils from '../utils/ViewUtils';
 import NavigationBar from '../common/NavigationBar';
 import URL from '../config/url';
+import Colors from '../constants/Colors';
 
 /**
  * 每个仓库的详情页面
@@ -45,7 +46,7 @@ export default class RepositoryDetailPage extends Component {
             <View style={ styles.container }>
                 <NavigationBar
                     title={this.state.title}
-                    style={{backgroundColor: '#6495ED'}}
+                    style={{backgroundColor: Colors.main}}
                     leftButton={ViewUtils.getLeftButton(() => this.onBack())}
                 />
                 <WebView onNavigationStateChange={(navState) => this.onNavigationStateChange(navState)}
