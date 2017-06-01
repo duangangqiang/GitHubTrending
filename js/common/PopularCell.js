@@ -10,7 +10,7 @@ import {
 /**
  * 最热模块单个项目行
  */
-export default class RepositoryCell extends Component {
+export default class PopularCell extends Component {
     constructor(props) {
         super(props);
     }

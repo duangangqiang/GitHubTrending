@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 
 import DataRepository, {FLAG_STORAGE} from '../expand/dao/DataRepository';
-import RepositoryCell from './RepositoryCell';
+import PopularCell from './PopularCell';
 import TrendingCell from './TrendingCell';
 import RepositoryDetailPage from '../page/RepositoryDetailPage';
 import Colors from '../constants/Colors';
@@ -134,7 +134,7 @@ export default class RepositoryTab extends Component {
         // 需要根据不同的页面来返回不同的组件
         if (this.isPopularPage) {
             return (
-                <RepositoryCell onSelect={(data) => this.onSelect(data)} data={data} />
+                <PopularCell onSelect={(data) => this.onSelect(data)} data={data} />
             );
         } else {
             return (
