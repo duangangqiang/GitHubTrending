@@ -49,7 +49,7 @@ export default class CustomKeyPage extends Component {
     componentDidMount() {
 
         // 在组件初始化的时候new这个dao
-        this.languageDao = new LanguageDao(FLAG_LANGUAGE.flag_key);
+        this.languageDao = new LanguageDao(this.props.flag);
         this.loadLanguage();
     }
 
@@ -185,6 +185,8 @@ export default class CustomKeyPage extends Component {
 
         // 右侧文字
         let rightButtonTitle = this.isRemoveKey ? '移除' : '保存';
+
+        title = this.props.flag === FLAG_LANGUAGE.flag_language ? '自定义语言' : title;
 
         return (
             <View style={styles.container}>
