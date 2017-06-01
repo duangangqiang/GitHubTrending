@@ -1,15 +1,12 @@
-import React, { PropTypes } from 'react';
+import React, {PropTypes, Component} from 'react';
 import {
     StyleSheet,
     Dimensions,
-    Animated,
-    Text,
     TouchableWithoutFeedback,
+    Animated,
     View,
     Easing
 } from 'react-native';
-
-let noop = () => {};
 
 let {height: SCREEN_HEIGHT, width: SCREEN_WIDTH} = Dimensions.get('window');
 let DEFAULT_ARROW_SIZE = new Size(10, 5);
@@ -31,14 +28,24 @@ function Rect(x, y, width, height) {
     this.height = height;
 }
 
-let Popover = React.createClass({
-    propTypes: {
+export default class Popover extends Component {
+    static propTypes = {
         isVisible: PropTypes.bool,
         onClose: PropTypes.func,
-        contentStyle:View.propTypes.style,
-    },
-    getInitialState() {
-        return {
+        contentStyle: View.propTypes.style
+    };
+
+    static defaultProps = {
+        isVisible: false,
+        displayArea: new Rect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT),
+        arrowSize: DEFAULT_ARROW_SIZE,
+        placement: 'auto',
+        onClose: () => {}
+    };
+
+    constructor(props) {
+        super(props);
+        this.state = {
             contentSize: {},
             anchorPoint: {},
             popoverOrigin: {},
@@ -48,20 +55,12 @@ let Popover = React.createClass({
                 scale: new Animated.Value(0),
                 translate: new Animated.ValueXY(),
                 fade: new Animated.Value(0),
-            },
+            }
         };
-    },
-    getDefaultProps() {
-        return {
-            isVisible: false,
-            displayArea: new Rect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT),
-            arrowSize: DEFAULT_ARROW_SIZE,
-            placement: 'auto',
-            onClose: noop,
-        };
-    },
-    measureContent(x) {
-        let {width, height} = x.nativeEvent.layout;
+    }
+
+    measureContent(e) {
+        let {width, height} = e.nativeEvent.layout;
         let contentSize = {width, height};
         let geom = this.computeGeometry({contentSize});
 
@@ -72,7 +71,8 @@ let Popover = React.createClass({
             // from the state
             isAwaitingShow && this._startAnimation({show: true});
         });
-    },
+    }
+
     computeGeometry({contentSize, placement}) {
         placement = placement || this.props.placement;
 
@@ -81,22 +81,23 @@ let Popover = React.createClass({
             fromRect: this.props.fromRect,
             arrowSize: this.getArrowSize(placement),
             contentSize,
-        }
+        };
 
         switch (placement) {
             case 'top':
-                return this.computeTopGeometry(options);
+                return Popover.computeTopGeometry(options);
             case 'bottom':
-                return this.computeBottomGeometry(options);
+                return Popover.computeBottomGeometry(options);
             case 'left':
-                return this.computeLeftGeometry(options);
+                return Popover.computeLeftGeometry(options);
             case 'right':
-                return this.computeRightGeometry(options);
+                return Popover.computeRightGeometry(options);
             default:
-                return this.computeAutoGeometry(options);
+                return Popover.computeAutoGeometry(options);
         }
-    },
-    computeTopGeometry({displayArea, fromRect, contentSize, arrowSize}) {
+    }
+
+    static computeTopGeometry({displayArea, fromRect, contentSize, arrowSize}) {
         let popoverOrigin = new Point(
             Math.min(displayArea.x + displayArea.width - contentSize.width,
                 Math.max(displayArea.x, fromRect.x + (fromRect.width - contentSize.width) / 2)),
@@ -108,8 +109,9 @@ let Popover = React.createClass({
             anchorPoint,
             placement: 'top',
         }
-    },
-    computeBottomGeometry({displayArea, fromRect, contentSize, arrowSize}) {
+    }
+
+    static computeBottomGeometry({displayArea, fromRect, contentSize, arrowSize}) {
         let popoverOrigin = new Point(
             Math.min(displayArea.x + displayArea.width - contentSize.width,
                 Math.max(displayArea.x, fromRect.x + (fromRect.width - contentSize.width) / 2)),
@@ -121,8 +123,9 @@ let Popover = React.createClass({
             anchorPoint,
             placement: 'bottom',
         }
-    },
-    computeLeftGeometry({displayArea, fromRect, contentSize, arrowSize}) {
+    }
+
+    static computeLeftGeometry({displayArea, fromRect, contentSize, arrowSize}) {
         let popoverOrigin = new Point(fromRect.x - contentSize.width - arrowSize.width,
             Math.min(displayArea.y + displayArea.height - contentSize.height,
                 Math.max(displayArea.y, fromRect.y + (fromRect.height - contentSize.height) / 2)));
@@ -133,8 +136,9 @@ let Popover = React.createClass({
             anchorPoint,
             placement: 'left',
         }
-    },
-    computeRightGeometry({displayArea, fromRect, contentSize, arrowSize}) {
+    }
+
+    static computeRightGeometry({displayArea, fromRect, contentSize, arrowSize}) {
         let popoverOrigin = new Point(fromRect.x + fromRect.width + arrowSize.width,
             Math.min(displayArea.y + displayArea.height - contentSize.height,
                 Math.max(displayArea.y, fromRect.y + (fromRect.height - contentSize.height) / 2)));
@@ -145,13 +149,14 @@ let Popover = React.createClass({
             anchorPoint,
             placement: 'right',
         }
-    },
-    computeAutoGeometry({displayArea, contentSize}) {
-        let placementsToTry = ['left', 'right', 'bottom', 'top'];
+    }
+
+    static computeAutoGeometry({displayArea, contentSize}) {
+        let placementsToTry = ['left', 'right', 'bottom', 'top'], geom;
 
         for (let i = 0; i < placementsToTry.length; i++) {
             let placement = placementsToTry[i];
-            let geom = this.computeGeometry({contentSize: contentSize, placement: placement});
+            geom = this.computeGeometry({contentSize: contentSize, placement: placement});
             let {popoverOrigin} = geom;
 
             if (popoverOrigin.x >= displayArea.x
@@ -163,21 +168,24 @@ let Popover = React.createClass({
         }
 
         return geom;
-    },
+    }
+
     getArrowSize(placement) {
         let size = this.props.arrowSize;
-        switch(placement) {
+        switch (placement) {
             case 'left':
             case 'right':
-                return new Size(size.height, size.width);
+                return new Size(size.width, size.height);
             default:
                 return size;
         }
-    },
-    getArrowColorStyle(color) {
-        return { borderTopColor: color };
-    },
-    getArrowRotation(placement) {
+    }
+
+    static getArrowColorStyle(color) {
+        return {borderTopColor: color};
+    }
+
+    static getArrowRotation(placement) {
         switch (placement) {
             case 'bottom':
                 return '180deg';
@@ -188,7 +196,8 @@ let Popover = React.createClass({
             default:
                 return '0deg';
         }
-    },
+    }
+
     getArrowDynamicStyle() {
         let {anchorPoint, popoverOrigin} = this.state;
         let arrowSize = this.props.arrowSize;
@@ -210,13 +219,15 @@ let Popover = React.createClass({
             borderBottomWidth: height / 2,
             borderLeftWidth: width / 2,
         }
-    },
+    }
+
     getTranslateOrigin() {
         let {contentSize, popoverOrigin, anchorPoint} = this.state;
         let popoverCenter = new Point(popoverOrigin.x + contentSize.width / 2,
             popoverOrigin.y + contentSize.height / 2);
         return new Point(anchorPoint.x - popoverCenter.x, anchorPoint.y - popoverCenter.y);
-    },
+    }
+
     componentWillReceiveProps(nextProps) {
         let willBeVisible = nextProps.isVisible;
         let {
@@ -232,14 +243,16 @@ let Popover = React.createClass({
                 this._startAnimation({show: false});
             }
         }
-    },
+    }
+
     _startAnimation({show}) {
         let handler = this.props.startCustomAnimation || this._startDefaultAnimation;
-        handler({show, doneCallback: () => this.setState({isTransitioning: false})});
+        handler.call(this, {show, doneCallback: () => this.setState({isTransitioning: false})});
         this.setState({isTransitioning: true});
-    },
+    }
+
     _startDefaultAnimation({show, doneCallback}) {
-        let animDuration = 300;
+        let animationDuration = 300;
         let values = this.state.defaultAnimatedValues;
         let translateOrigin = this.getTranslateOrigin();
 
@@ -248,9 +261,9 @@ let Popover = React.createClass({
         }
 
         let commonConfig = {
-            duration: animDuration,
+            duration: animationDuration,
             easing: show ? Easing.out(Easing.back()) : Easing.inOut(Easing.quad),
-        }
+        };
 
         Animated.parallel([
             Animated.timing(values.fade, {
@@ -266,7 +279,8 @@ let Popover = React.createClass({
                 ...commonConfig,
             })
         ]).start(doneCallback);
-    },
+    }
+
     _getDefaultAnimatedStyles() {
         // If there's a custom animation handler,
         // we don't return the default animated styles
@@ -299,7 +313,8 @@ let Popover = React.createClass({
                 ],
             }
         };
-    },
+    }
+
     _getExtendedStyles() {
         let background = [];
         let popover = [];
@@ -321,7 +336,8 @@ let Popover = React.createClass({
             arrow,
             content,
         }
-    },
+    }
+
     render() {
         if (!this.props.isVisible && !this.state.isTransitioning) {
             return null;
@@ -331,26 +347,25 @@ let Popover = React.createClass({
         let extendedStyles = this._getExtendedStyles();
         let contentStyle = [styles.content, ...extendedStyles.content];
         let arrowColor = StyleSheet.flatten(contentStyle).backgroundColor;
-        let arrowColorStyle = this.getArrowColorStyle(arrowColor);
+        let arrowColorStyle = Popover.getArrowColorStyle(arrowColor);
         let arrowDynamicStyle = this.getArrowDynamicStyle();
         let contentSizeAvailable = this.state.contentSize.width;
 
-        // Special case, force the arrow rotation even if it was overriden
+        // Special case, force the arrow rotation even if it was override
         let arrowStyle = [styles.arrow, arrowDynamicStyle, arrowColorStyle, ...extendedStyles.arrow];
         let arrowTransform = (StyleSheet.flatten(arrowStyle).transform || []).slice(0);
-        arrowTransform.unshift({rotate: this.getArrowRotation(placement)});
-        arrowStyle = [...arrowStyle, {transform: arrowTransform}];
-        let contentMarginRight=this.props.contentMarginRight? this.props.contentMarginRight:0;
+        arrowTransform.unshift({rotate: Popover.getArrowRotation(placement)});
+        let contentMarginRight = this.props.contentMarginRight ? this.props.contentMarginRight : 0;
         return (
-            <TouchableWithoutFeedback onPress={this.props.onClose}>
-                <View style={[styles.container, contentSizeAvailable && styles.containerVisible ]}>
+            <TouchableWithoutFeedback onPress={() => this.props.onClose()}>
+                <View style={[styles.container, contentSizeAvailable && styles.containerVisible]}>
                     <Animated.View style={[styles.background, ...extendedStyles.background]}/>
                     <Animated.View style={[styles.popover, {
                         top: popoverOrigin.y,
-                        left: popoverOrigin.x-contentMarginRight,
+                        left: popoverOrigin.x - contentMarginRight,
                     }, ...extendedStyles.popover]}>
-                        {/*<Animated.View style={arrowStyle}/> 隐藏箭头*/}
-                        <Animated.View ref='content' onLayout={this.measureContent} style={[contentStyle,this.props.contentStyle,]}>
+                        <Animated.View ref='content' onLayout={e => this.measureContent(e)}
+                                       style={[contentStyle, this.props.contentStyle,]}>
                             {this.props.children}
                         </Animated.View>
                     </Animated.View>
@@ -358,10 +373,10 @@ let Popover = React.createClass({
             </TouchableWithoutFeedback>
         );
     }
-});
+}
 
 
-let styles = StyleSheet.create({
+const styles = StyleSheet.create({
     container: {
         opacity: 0,
         top: 0,
@@ -380,7 +395,6 @@ let styles = StyleSheet.create({
         left: 0,
         right: 0,
         position: 'absolute',
-        //隐藏背景 backgroundColor: 'rgba(0,0,0,0.5)',
     },
     popover: {
         backgroundColor: 'transparent',
@@ -403,5 +417,3 @@ let styles = StyleSheet.create({
         borderLeftColor: 'transparent',
     },
 });
-
-module.exports = Popover;
