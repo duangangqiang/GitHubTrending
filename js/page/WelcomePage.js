@@ -16,13 +16,13 @@ import PAGE_CONFIG from '../config/pages';
  */
 export default class WelcomePage extends Component {
     componentDidMount() {
-        // this.timer = setTimeout(() => {
-        //
-        //     // 重置导航记录
-        //     this.props.navigator.resetTo({
-        //         component: HomePage
-        //     });
-        // }, 2000);
+        this.timer = setTimeout(() => {
+
+            // 重置导航记录
+            this.props.navigator.resetTo({
+                component: HomePage
+            });
+        }, 3000);
     }
 
     componentWillUnmount() {
@@ -51,7 +51,8 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        backgroundColor: Colors.fff
     },
     loge: {
         width: 200,
