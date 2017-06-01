@@ -21,9 +21,9 @@ import TimeSpan from '../model/TimeSpan';
 
 // 时间区间下拉数组
 const timeSpanTextArray = [
-    new TimeSpan('今 天', 'since=daily'),
-    new TimeSpan('本 周', 'since=weekly'),
-    new TimeSpan('本 月', 'since=monthly')
+    new TimeSpan('今 天', '?since=daily'),
+    new TimeSpan('本 周', '?since=weekly'),
+    new TimeSpan('本 月', '?since=monthly')
 ];
 
 /**
@@ -98,6 +98,7 @@ export default class TrendingPage extends Component {
                 <TouchableOpacity ref="downArrow" onPress={() => this.showPopover()}>
                     <View style={styles.topDateFilter}>
                         <Text style={styles.title}>趋势</Text>
+                        <Text style={styles.title}>{this.state.timeSpan.showText}</Text>
                         <Image style={styles.downArrow}
                                source={require('../../res/images/ic_spinner_triangle.png')}/>
                     </View>

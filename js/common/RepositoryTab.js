@@ -35,16 +35,17 @@ export default class RepositoryTab extends Component {
     /**
      * 拼接请求地址
      * @param key 要加载的标签关键字
+     * @param timeSpan 时间间隔对象
      * @returns {string} 请求地址
      */
-    getUrl(key) {
+    getUrl(key, timeSpan) {
         return this.isPopularPage ?
             URL.repositorySearch + key + URL.repositoryQuery :
-            URL.Trending + key + this.props.timeSpan.searchText;
+            URL.Trending + key + timeSpan.searchText;
     }
 
     componentDidMount() {
-        this.loadRepositories();
+        this.loadRepositories(this.props.timeSpan);
     }
 
     componentWillReceiveProps(nexProps) {
@@ -56,7 +57,7 @@ export default class RepositoryTab extends Component {
     /**
      * 加载当前标签的项目数据
      */
-    loadRepositories() {
+    loadRepositories(timeSpan) {
 
         // 显示加载中
         this.setState({
@@ -64,7 +65,7 @@ export default class RepositoryTab extends Component {
         });
 
         // 获取请求地址
-        const url = this.getUrl(this.props.tabLabel);
+        const url = this.getUrl(this.props.tabLabel, timeSpan);
 
         // 根据请求地址加载数据
         this.dataRepository.fetchRepository(url)
