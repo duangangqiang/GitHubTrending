@@ -7,17 +7,38 @@ import {
     TouchableOpacity
 } from 'react-native';
 
+import Colors from '../constants/Colors';
+
 /**
  * 最热模块单个项目行
  */
 export default class PopularCell extends Component {
     constructor(props) {
         super(props);
+        this.state = {
+            isFavorite: false,
+            favoriteIcon: require('../../res/images/ic_unstar_transparent.png')
+        }
+    }
+
+    setFavoriteState(isFavorite) {
+        this.setState({
+            isFavorite: isFavorite,
+            favoriteIcon: isFavorite ? require('../../res/images/ic_star.png')
+                : require('../../res/images/ic_unstar_transparent.png')
+        });
+    }
+
+    onPressFavorite() {
+        this.setFavoriteState(!this.state.isFavorite);
     }
 
     render() {
         const data = this.props.data;
-
+        const favoriteButton = <TouchableOpacity onPress={() => this.onPressFavorite()}>
+            <Image style={styles.star}
+                   source={this.state.favoriteIcon}/>
+        </TouchableOpacity>;
         return (
             <TouchableOpacity style={styles.container} onPress={() => this.props.onSelect(data)}>
                 <View style={styles.box}>
@@ -32,7 +53,7 @@ export default class PopularCell extends Component {
                             <Text>Starts: </Text>
                             <Text>{data.stargazers_count}</Text>
                         </View>
-                        <Image style={styles.star} source={require('../../res/images/ic_star.png')}/>
+                        {favoriteButton}
                     </View>
                 </View>
             </TouchableOpacity>
@@ -83,6 +104,7 @@ const styles = StyleSheet.create({
     },
     star: {
         width: 22,
-        height: 22
+        height: 22,
+        tintColor: Colors.main
     }
 });
