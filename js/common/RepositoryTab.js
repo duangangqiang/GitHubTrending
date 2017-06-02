@@ -9,6 +9,8 @@ import {
 import DataRepository, {FLAG_STORAGE} from '../expand/dao/DataRepository';
 import PopularCell from './PopularCell';
 import TrendingCell from './TrendingCell';
+import ProjectModel from '../model/ProjectModel';
+import Utils from '../utils/Utils';
 import RepositoryDetailPage from '../page/RepositoryDetailPage';
 import Colors from '../constants/Colors';
 import URL from '../config/url';
@@ -19,16 +21,22 @@ import URL from '../config/url';
 export default class RepositoryTab extends Component {
     constructor(props) {
         super(props);
+
+        // 是否是最热模块的标记
         this.isPopularPage = this.props.isPopularPage;
+
+        // 从父传递过来,整个页面使用一个dao
+        this.favoriteDao = this.props.favoriteDao;
 
         // 根据不同页面传递不同标志
         this.dataRepository = new DataRepository(this.isPopularPage ? FLAG_STORAGE.flag_popular : FLAG_STORAGE.flag_trending);
         this.state = {
             errorMsg: '', // 错误消息
-            isLoading: false,
+            isLoading: false, // 加载状态
             dataSource: new ListView.DataSource({
                 rowHasChanged: (r1, r2) => r1 !== r2
-            })
+            }), // 项目列表
+            favoriteKeys: [] // 已经收藏的项目keys
         };
     }
 
@@ -49,9 +57,57 @@ export default class RepositoryTab extends Component {
     }
 
     componentWillReceiveProps(nexProps) {
+
+        // 选择的时间段变化的时候需要重新加载项目
         if (nexProps.timeSpan !== this.props.timeSpan) {
             this.loadRepositories(nexProps.timeSpan);
         }
+    }
+
+    /**
+     * 能够更新项目的收藏状态
+     */
+    flushFavoriteState() {
+        let projectModels = [],
+            items = this.items;
+
+        for (let i = 0, len = items.length; i < len; i++) {
+            projectModels.push(
+                new ProjectModel(items[i], Utils.checkFavorite(items[i], this.state.favoriteKeys))
+            );
+        }
+
+        this.setState({
+            isLoading: false,
+            dataSource: this.getDataSource(projectModels)
+        })
+    }
+
+    /**
+     * 使用数据来创建dataSource
+     * @param data 源数据
+     * @returns {ListViewDataSource}
+     */
+    getDataSource(data) {
+        return this.state.dataSource.cloneWithRows(data);
+    }
+
+    /**
+     * 获取已经收藏的所有项目的keys
+     */
+    getFavoriteKeys() {
+        this.favoriteDao.getFavoriteKeys()
+            .then(keys => {
+                if (keys) {
+                    this.setState({
+                        favoriteKeys: keys
+                    });
+                }
+                this.flushFavoriteState();
+            })
+            .catch(() => {
+                this.flushFavoriteState();
+            })
     }
 
     /**
@@ -60,9 +116,7 @@ export default class RepositoryTab extends Component {
     loadRepositories(timeSpan) {
 
         // 显示加载中
-        this.setState({
-            isLoading: true
-        });
+        this.setState({ isLoading: true });
 
         // 获取请求地址
         const url = this.getUrl(this.props.tabLabel, timeSpan);
@@ -72,13 +126,10 @@ export default class RepositoryTab extends Component {
             .then(result => {
 
                 // 如果加载了缓存数据,会进入到这里,如果没有就是空数组
-                let items = result && result.items ? result.items : (result ? result : []);
+                this.items = result && result.items ? result.items : (result ? result : []);
 
-                // 设置状态
-                this.setState({
-                    dataSource: this.state.dataSource.cloneWithRows(items),
-                    isLoading: false
-                });
+                // 加载收藏的项目数据
+                this.getFavoriteKeys();
 
                 // 如果数据过期了
                 if (result && result.update_date && !DataRepository.checkData(result.update_date)) {
@@ -93,10 +144,10 @@ export default class RepositoryTab extends Component {
                 if (!items || items.length === 0) {
                     return;
                 }
+                this.items = items;
 
-                this.setState({
-                    dataSource: this.state.dataSource.cloneWithRows(items)
-                });
+                // 加载收藏的项目数据
+                this.getFavoriteKeys();
             })
             .catch((error) => {
                 this.setState({
@@ -106,39 +157,60 @@ export default class RepositoryTab extends Component {
             })
     }
 
+    /**
+     * ListView的刷新回调函数
+     */
     onRefresh() {
+
+        // 使用当前的timeSpan进行更新数据
         this.loadRepositories(this.props.timeSpan);
     }
 
     /**
      * 点击就跳转到详情页面
-     * @param data 当前行数据
+     * @param projectModel 当前行数据
      */
-    onSelect(data) {
+    onSelect(projectModel) {
         this.props.navigator.push({
             component: RepositoryDetailPage,
             params: {
-                item: data,
+                projectModel: projectModel, // 将整个ProjectModel作为参数传递进去,在WebView中也可以拿到收藏状态
                 ...this.props
             }
         });
     }
 
     /**
+     * 点击收藏的回调函数
+     * @param item 当前点击的项
+     * @param isFavorite 是否收藏
+     */
+    onFavoritePress(item, isFavorite) {
+        if (isFavorite) {
+            this.favoriteDao.addFavoriteItem(item.id.toString(), JSON.stringify(item));
+        } else {
+            this.favoriteDao.removeFavoriteItem(item.id.toString());
+        }
+    }
+
+    /**
      * 生成单行元素
-     * @param data 当前行数据
+     * @param ProjectModel 当前行数据
      * @returns {XML}
      */
-    renderCell(data) {
+    renderCell(ProjectModel) {
 
         // 需要根据不同的页面来返回不同的组件
         if (this.isPopularPage) {
             return (
-                <PopularCell onSelect={(data) => this.onSelect(data)} data={data} />
+                <PopularCell key={ProjectModel.item.id} onSelect={(ProjectModel) => this.onSelect(ProjectModel)}
+                             projectModel={ProjectModel}
+                             onFavoritePress={(item, isFavorite) => this.onFavoritePress(item, isFavorite)}/>
             );
         } else {
             return (
-                <TrendingCell onSelect={(data) => this.onSelect(data)} data={data} />
+                <TrendingCell key={ProjectModel.item.id} onSelect={(ProjectModel) => this.onSelect(ProjectModel)}
+                              projectModel={ProjectModel}/>
             );
         }
     }

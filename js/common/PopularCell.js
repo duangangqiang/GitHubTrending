@@ -9,51 +9,89 @@ import {
 
 import Colors from '../constants/Colors';
 
+const starIcon = require('../../res/images/ic_star.png'); // 收藏星星
+const unStarIcon = require('../../res/images/ic_unstar_transparent.png'); // 未收藏星星
+
 /**
  * 最热模块单个项目行
  */
 export default class PopularCell extends Component {
     constructor(props) {
         super(props);
+
         this.state = {
-            isFavorite: false,
-            favoriteIcon: require('../../res/images/ic_unstar_transparent.png')
+            isFavorite: this.props.projectModel.isFavorite, // 是否已经收藏
+            favoriteIcon: this.props.projectModel.isFavorite ? starIcon : unStarIcon // 当前显示的图标
         }
     }
 
+    /**
+     * 设置state收藏状态
+     * @param isFavorite 是否收藏
+     */
     setFavoriteState(isFavorite) {
         this.setState({
             isFavorite: isFavorite,
-            favoriteIcon: isFavorite ? require('../../res/images/ic_star.png')
-                : require('../../res/images/ic_unstar_transparent.png')
+            favoriteIcon: isFavorite ? starIcon : unStarIcon
         });
     }
 
+    componentWillReceiveProps(nextProps) {
+
+        // 如果外部收藏改变,需要使用最新的收藏来设置图标显示
+        this.setFavoriteState(nextProps.projectModel.isFavorite);
+    }
+
+    /**
+     * 点击收藏按钮回调函数
+     */
     onPressFavorite() {
+
+        // 点击需要取反
         this.setFavoriteState(!this.state.isFavorite);
+
+        // 触发父组件的函数进行收藏状态保存
+        this.props.onFavoritePress(this.props.projectModel.item, !this.state.isFavorite);
+    }
+
+    /**
+     * 生成关注按钮
+     * @returns {XML}
+     * @private
+     */
+    _renderFavoriteButton () {
+        return (
+            <TouchableOpacity onPress={() => this.onPressFavorite()}>
+                <Image style={styles.star} source={this.state.favoriteIcon}/>
+            </TouchableOpacity>
+        );
+    }
+
+    onPress() {
+        this.props.onSelect(this.props.projectModel);
+    }
+
+    getItem() {
+        return this.props.projectModel.item ? this.props.projectModel.item : this.props.projectModel;
     }
 
     render() {
-        const data = this.props.data;
-        const favoriteButton = <TouchableOpacity onPress={() => this.onPressFavorite()}>
-            <Image style={styles.star}
-                   source={this.state.favoriteIcon}/>
-        </TouchableOpacity>;
+        const item = this.getItem();
         return (
-            <TouchableOpacity style={styles.container} onPress={() => this.props.onSelect(data)}>
+            <TouchableOpacity style={styles.container} onPress={() => this.onPress()}>
                 <View style={styles.box}>
-                    <Text style={styles.title}>{data.full_name}</Text>
-                    <Text style={styles.description}>{data.description}</Text>
+                    <Text style={styles.title}>{item.full_name}</Text>
+                    <Text style={styles.description}>{item.description}</Text>
                     <View style={styles.bottom}>
                         <View style={styles.avatar_box}>
                             <Text>Author: </Text>
-                            <Image style={styles.avatar} source={{uri: data.owner.avatar_url}}/>
+                            <Image style={styles.avatar} source={{uri: item.owner.avatar_url}}/>
                         </View>
                         <View style={styles.avatar_box}>
                             <Text>Starts: </Text>
-                            <Text>{data.stargazers_count}</Text>
+                            <Text>{item.stargazers_count}</Text>
                         </View>
-                        {favoriteButton}
+                        {this._renderFavoriteButton()}
                     </View>
                 </View>
             </TouchableOpacity>

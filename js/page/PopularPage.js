@@ -10,6 +10,8 @@ import NavigationBar from '../common/NavigationBar';
 import PopularTab from '../common/RepositoryTab';
 import Colors from '../constants/Colors';
 import PAGE_CONFIG from '../config/pages';
+import {FLAG_STORAGE} from '../expand/dao/DataRepository';
+import FavoriteDao from '../expand/dao/FavoriteDao';
 import LanguageDao, {FLAG_LANGUAGE} from '../expand/dao/LanguageDao';
 import {SHOW_TOAST} from '../constants/Events';
 import {LOAD_LANGUAGE_LIST_FAIL} from '../constants/Tips';
@@ -20,6 +22,7 @@ import {LOAD_LANGUAGE_LIST_FAIL} from '../constants/Tips';
 export default class PopularPage extends Component {
     constructor(props) {
         super(props);
+        this.favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_popular);
         this.state = {
             languages: [] // 当前显示的语言列表
         };
@@ -50,7 +53,8 @@ export default class PopularPage extends Component {
     renderPopularTab() {
         return this.state.languages.map((item, index, arr) => {
             let lan = arr[index];
-            return lan.checked ? <PopularTab key={index} isPopularPage={true} tabLabel={lan.name} {...this.props}/> : null;
+            return lan.checked ?
+                <PopularTab key={index} isPopularPage={true} favoriteDao={this.favoriteDao} tabLabel={lan.name} {...this.props}/> : null;
         })
     }
 
@@ -62,9 +66,9 @@ export default class PopularPage extends Component {
 
         // 如果有内容才渲染这个ScrollableTabView
         return this.state.languages.length > 0 ? <ScrollableTabView
-            tabBarBackgroundColor= {Colors.main}
-            tabBarInactiveTextColor= {Colors.f5fffa}
-            tabBarActiveTextColor= {Colors.fff}
+            tabBarBackgroundColor={Colors.main}
+            tabBarInactiveTextColor={Colors.f5fffa}
+            tabBarActiveTextColor={Colors.fff}
             tabBarUnderlineStyle={{
                 backgroundColor: Colors.e7e7e7,
                 height: 2

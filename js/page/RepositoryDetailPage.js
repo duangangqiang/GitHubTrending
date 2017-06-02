@@ -16,13 +16,11 @@ import Colors from '../constants/Colors';
 export default class RepositoryDetailPage extends Component {
     constructor(props) {
         super(props);
-        this.url = this.props.item.html_url ? this.props.item.html_url
-            : URL.GitHub + this.props.item.fullName;
-        let title = this.props.item.full_name ? this.props.item.full_name
-            : this.props.item.fullName;
+        let item = this.props.projectModel.item;
+
         this.state = {
-            url: this.url,
-            title: title,
+            url: item.html_url ? item.html_url : URL.GitHub + item.fullName,
+            title: item.full_name ? item.full_name : item.fullName,
             canGoBack: false
         };
     }
