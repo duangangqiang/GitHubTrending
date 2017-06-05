@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 
 import DataRepository, {FLAG_STORAGE} from '../expand/dao/DataRepository';
-import PopularCell from './PopularCell';
+import RepositoryCell from './RepositoryCell';
 import ProjectModel from '../model/ProjectModel';
 import Utils from '../utils/Utils';
 import RepositoryDetailPage from '../page/RepositoryDetailPage';
@@ -201,9 +201,9 @@ export default class RepositoryTab extends Component {
 
         // 需要根据不同的页面来返回不同的组件
         return (
-            <PopularCell key={ProjectModel.item.id} onSelect={(ProjectModel) => this.onSelect(ProjectModel)}
-                         projectModel={ProjectModel} isPopularPage={this.isPopularPage}
-                         onFavoritePress={(item, isFavorite) => this.onFavoritePress(item, isFavorite)}/>
+            <RepositoryCell key={ProjectModel.item.id} onSelect={(ProjectModel) => this.onSelect(ProjectModel)}
+                            projectModel={ProjectModel} isPopularPage={this.isPopularPage}
+                            onFavoritePress={(item, isFavorite) => this.onFavoritePress(item, isFavorite)}/>
         );
     }
 
