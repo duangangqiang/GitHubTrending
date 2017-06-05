@@ -12,7 +12,8 @@ import ScrollableTabView, {ScrollableTabBar} from 'react-native-scrollable-tab-v
 import NavigationBar from '../common/NavigationBar';
 import RepositoryTab from '../common/RepositoryTab';
 import Colors from '../constants/Colors';
-import PAGE_CONFIG from '../config/pages';
+import FavoriteDao from '../expand/dao/FavoriteDao';
+import {FLAG_STORAGE} from '../expand/dao/DataRepository';
 import LanguageDao, {FLAG_LANGUAGE} from '../expand/dao/LanguageDao';
 import {SHOW_TOAST} from '../constants/Events';
 import {LOAD_LANGUAGE_LIST_FAIL} from '../constants/Tips';
@@ -32,6 +33,9 @@ const timeSpanTextArray = [
 export default class TrendingPage extends Component {
     constructor(props) {
         super(props);
+
+        this.favoriteDao = new FavoriteDao(FLAG_STORAGE.flag_trending);
+
         this.state = {
             languages: [], // 当前显示的语言列表
             isVisible: false, // 是否显示下拉
@@ -67,7 +71,7 @@ export default class TrendingPage extends Component {
     renderPopularTab() {
         return this.state.languages.map((item, index, arr) => {
             let lan = arr[index];
-            return lan.checked ? <RepositoryTab key={index} tabLabel={lan.name}
+            return lan.checked ? <RepositoryTab key={index} tabLabel={lan.name} favoriteDao={this.favoriteDao}
                                                 timeSpan={this.state.timeSpan} {...this.props}/> : null;
         })
     }
@@ -92,6 +96,10 @@ export default class TrendingPage extends Component {
         </ScrollableTabView> : null;
     }
 
+    /**
+     * 渲染顶部标题视图
+     * @returns {XML}
+     */
     renderTitleView() {
         return (
             <View>
@@ -106,6 +114,9 @@ export default class TrendingPage extends Component {
         );
     }
 
+    /**
+     * 用于显示日期间隔下拉的方法
+     */
     showPopover() {
         this.refs.downArrow.measure((ox, oy, width, height, px, py) => {
             this.setState({
@@ -115,10 +126,17 @@ export default class TrendingPage extends Component {
         });
     }
 
+    /**
+     * 关闭日期间隔下拉的方法
+     */
     closePopover() {
         this.setState({isVisible: false});
     }
 
+    /**
+     * 点击日期间隔的方法
+     * @param timeSpan
+     */
     onSelectTimeSpan(timeSpan) {
         this.setState({
             timeSpan,
@@ -126,6 +144,10 @@ export default class TrendingPage extends Component {
         });
     }
 
+    /**
+     * 渲染日期间隔方法
+     * @returns {XML}
+     */
     renderPopover() {
         return (
             <Popover isVisible={this.state.isVisible} fromRect={this.state.buttonRect}

@@ -6,6 +6,7 @@ import {
     View,
     TouchableOpacity
 } from 'react-native';
+import HTMLView from 'react-native-htmlview';
 
 import Colors from '../constants/Colors';
 
@@ -18,6 +19,9 @@ const unStarIcon = require('../../res/images/ic_unstar_transparent.png'); // 未
 export default class PopularCell extends Component {
     constructor(props) {
         super(props);
+
+        // 是不是最热模块
+        this.isPopularPage = this.props.isPopularPage;
 
         this.state = {
             isFavorite: this.props.projectModel.isFavorite, // 是否已经收藏
@@ -67,16 +71,28 @@ export default class PopularCell extends Component {
         );
     }
 
+    /**
+     * 点击跳转详情页面
+     */
     onPress() {
         this.props.onSelect(this.props.projectModel);
     }
 
+    /**
+     * 获取ProjectModel中的Items
+     * @returns {*}
+     */
     getItem() {
         return this.props.projectModel.item ? this.props.projectModel.item : this.props.projectModel;
     }
 
-    render() {
-        const item = this.getItem();
+    /**
+     * 渲染最热页面的Cell
+     * @param item 项目数据
+     * @returns {XML}
+     * @private
+     */
+    _renderPopularCell(item) {
         return (
             <TouchableOpacity style={styles.container} onPress={() => this.onPress()}>
                 <View style={styles.box}>
@@ -96,6 +112,49 @@ export default class PopularCell extends Component {
                 </View>
             </TouchableOpacity>
         );
+    }
+
+    /**
+     * 渲染趋势页面的Cell
+     * @param item 项目数据
+     * @returns {XML}
+     * @private
+     */
+    _renderTrendingCell(item) {
+
+        // 加一个p利于设置样式
+        let description = '<p>' + item.description + '</p>';
+        return (
+            <TouchableOpacity style={styles.container} onPress={() => this.onPress()}>
+                <View style={styles.box}>
+                    <Text style={styles.title}>{item.fullName}</Text>
+                    <HTMLView value={description}
+                              onLinkPress={(url) => {}}
+                              stylesheet={{
+                                  p: styles.description,
+                                  a: styles.description
+                              }}
+                    />
+                    <Text style={styles.description}>{item.meta}</Text>
+                    <View style={styles.bottom}>
+                        <View style={styles.avatar_box}>
+                            <Text style={styles.description}>Build By: </Text>
+                            {item.contributors.map((result, index, arr) => {
+                                return <Image style={styles.avatar}
+                                              key={index}
+                                              source={{uri: arr[index]}}/>
+                            })}
+                        </View>
+                        {this._renderFavoriteButton()}
+                    </View>
+                </View>
+            </TouchableOpacity>
+        );
+    }
+
+    render() {
+        const item = this.getItem();
+        return this.isPopularPage ? this._renderPopularCell(item) : this._renderTrendingCell(item);
     }
 }
 

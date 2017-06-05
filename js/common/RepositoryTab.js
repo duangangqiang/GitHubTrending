@@ -8,7 +8,6 @@ import {
 
 import DataRepository, {FLAG_STORAGE} from '../expand/dao/DataRepository';
 import PopularCell from './PopularCell';
-import TrendingCell from './TrendingCell';
 import ProjectModel from '../model/ProjectModel';
 import Utils from '../utils/Utils';
 import RepositoryDetailPage from '../page/RepositoryDetailPage';
@@ -201,18 +200,11 @@ export default class RepositoryTab extends Component {
     renderCell(ProjectModel) {
 
         // 需要根据不同的页面来返回不同的组件
-        if (this.isPopularPage) {
-            return (
-                <PopularCell key={ProjectModel.item.id} onSelect={(ProjectModel) => this.onSelect(ProjectModel)}
-                             projectModel={ProjectModel}
-                             onFavoritePress={(item, isFavorite) => this.onFavoritePress(item, isFavorite)}/>
-            );
-        } else {
-            return (
-                <TrendingCell key={ProjectModel.item.id} onSelect={(ProjectModel) => this.onSelect(ProjectModel)}
-                              projectModel={ProjectModel}/>
-            );
-        }
+        return (
+            <PopularCell key={ProjectModel.item.id} onSelect={(ProjectModel) => this.onSelect(ProjectModel)}
+                         projectModel={ProjectModel} isPopularPage={this.isPopularPage}
+                         onFavoritePress={(item, isFavorite) => this.onFavoritePress(item, isFavorite)}/>
+        );
     }
 
     render() {
